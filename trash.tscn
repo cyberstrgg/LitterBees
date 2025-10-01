@@ -4,14 +4,14 @@
 [ext_resource type="Texture2D" uid="uid://c64wiubq2urgr" path="res://mixed-pile-of-trash-with-plastic-bottles-cans-and-food-waste-isolated-transparent-png.webp" id="2_76yqg"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_272bh"]
-radius = 9.0
-height = 28.0
+radius = 34.0
+height = 74.0
 
 [node name="Trash" type="Node2D"]
 script = ExtResource("1_43he1")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-scale = Vector2(0.05, 0.05)
+scale = Vector2(0.19500002, 0.19500001)
 texture = ExtResource("2_76yqg")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

@@ -48,7 +48,6 @@ func _physics_process(delta):
 func set_new_trash_target(new_trash: Node2D):
     trash_node = new_trash
     # Immediately go after the new trash.
-    current_state = State.GOING_TO_TRASH
 
 func move_towards_target(target_position: Vector2):
     var direction = (target_position - global_position).normalized()

@@ -1,23 +1,31 @@
-[gd_scene load_steps=4 format=3 uid="uid://cqow47bch5ocs"]
+[gd_scene load_steps=5 format=3 uid="uid://cqow47bch5ocs"]
 
 [ext_resource type="Script" uid="uid://bs2qeucwtife5" path="res://main.gd" id="1_lquwl"]
+[ext_resource type="Texture2D" uid="uid://dfsj5emf3xp71" path="res://Bee_Nest_Honey_%28E%29_JE1.webp" id="3_1bvp3"]
 [ext_resource type="PackedScene" uid="uid://d2e82ja120s8" path="res://bee.tscn" id="3_h2yge"]
 [ext_resource type="PackedScene" uid="uid://bcwamvfswossu" path="res://trash.tscn" id="4_1bvp3"]
 
-[node name="Main" type="Node2D" node_paths=PackedStringArray("bee_node", "initial_trash_node", "hive_node")]
+[node name="Main" type="Node2D" node_paths=PackedStringArray("bee_node", "initial_trash_node", "hive_node", "camera_node")]
 script = ExtResource("1_lquwl")
 trash_scene = ExtResource("4_1bvp3")
 bee_node = NodePath("Bee")
 initial_trash_node = NodePath("Trash")
 hive_node = NodePath("Hive")
+camera_node = NodePath("Camera2D")
+spawn_padding = 250.0
 
 [node name="Camera2D" type="Camera2D" parent="."]
 
 [node name="Hive" type="Node2D" parent="."]
 
+[node name="Sprite2D" type="Sprite2D" parent="Hive"]
+z_index = 3
+scale = Vector2(1.1333333, 1.1333333)
+texture = ExtResource("3_1bvp3")
+
 [node name="Trash" parent="." instance=ExtResource("4_1bvp3")]
 position = Vector2(-310, 94)
-health = 1
+health = 2
 
 [node name="Bee" parent="." node_paths=PackedStringArray("trash_node", "hive_node") instance=ExtResource("3_h2yge")]
 position = Vector2(-190, 147)
