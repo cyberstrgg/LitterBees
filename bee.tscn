@@ -3,8 +3,7 @@
 [ext_resource type="Script" uid="uid://dty77uyierl73" path="res://beejob.gd" id="1_v5qog"]
 [ext_resource type="Texture2D" uid="uid://cewcx1wjumnxu" path="res://ants-bees-and-wasps-hymenoptera-medium.png" id="2_q8d8k"]
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_v5qog"]
-radius = 6.0
+[sub_resource type="CircleShape2D" id="CircleShape2D_v5qog"]
 
 [node name="Bee" type="CharacterBody2D"]
 script = ExtResource("1_v5qog")
@@ -15,4 +14,4 @@ scale = Vector2(0.055, 0.054999974)
 texture = ExtResource("2_q8d8k")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("CapsuleShape2D_v5qog")
+shape = SubResource("CircleShape2D_v5qog")

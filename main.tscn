@@ -35,6 +35,11 @@ position = Vector2(-190, 147)
 trash_node = NodePath("../Trash")
 hive_node = NodePath("../Hive")
 
+[node name="Bee" parent="Bee" node_paths=PackedStringArray("trash_node", "hive_node") instance=ExtResource("3_h2yge")]
+position = Vector2(-190, 147)
+trash_node = NodePath("../../Trash")
+hive_node = NodePath("../../Hive")
+
 [node name="Control" type="Control" parent="."]
 layout_mode = 3
 anchors_preset = 15

@@ -9,6 +9,7 @@ signal scrap_delivered
 @export var arrival_threshold: float = 5.0
 
 var is_holding_scrap = false
+var bounce_cooldown: float = 0.0 # <-- ADD THIS LINE
 
 enum State {
     GOING_TO_TRASH,
@@ -23,34 +24,60 @@ func _ready():
     current_state = State.GOING_TO_TRASH
 
 func _physics_process(delta):
-    match current_state:
-        State.GOING_TO_TRASH:
-            if is_instance_valid(trash_node):
-                move_towards_target(trash_node.global_position)
-                
-                if global_position.distance_to(trash_node.global_position) < arrival_threshold:
-                    trash_node.take_damage(1)
-                    is_holding_scrap = true
-                    current_state = State.RETURNING_TO_HIVE
-            else:
-                reassign_trash_target()
-                
-        State.RETURNING_TO_HIVE:
-            if is_instance_valid(hive_node):
-                move_towards_target(hive_node.global_position)
-                
-                if global_position.distance_to(hive_node.global_position) < arrival_threshold:
-                    if is_holding_scrap:
-                        # Print statement to confirm the signal is being sent.
-                        print("Bee at hive with scrap, emitting signal.")
-                        scrap_delivered.emit()
-                        is_holding_scrap = false
+    # If on cooldown, just count down and don't run the logic below.
+    if bounce_cooldown > 0:
+        bounce_cooldown -= delta
+    else:
+        # Standard movement logic only runs when not on cooldown.
+        match current_state:
+            State.GOING_TO_TRASH:
+                if is_instance_valid(trash_node):
+                    move_towards_target(trash_node.global_position)
                     
-                    current_state = State.GOING_TO_TRASH
+                    if global_position.distance_to(trash_node.global_position) < arrival_threshold:
+                        trash_node.take_damage(1)
+                        is_holding_scrap = true
+                        current_state = State.RETURNING_TO_HIVE
+                else:
                     reassign_trash_target()
+                    
+            State.RETURNING_TO_HIVE:
+                if is_instance_valid(hive_node):
+                    move_towards_target(hive_node.global_position)
+                    
+                    if global_position.distance_to(hive_node.global_position) < arrival_threshold:
+                        if is_holding_scrap:
+                            print("Bee at hive with scrap, emitting signal.")
+                            scrap_delivered.emit()
+                            is_holding_scrap = false
+                        
+                        current_state = State.GOING_TO_TRASH
+                        reassign_trash_target()
             
     move_and_slide()
 
+    # Collision check remains the same, but now it SETS the cooldown.
+    for i in range(get_slide_collision_count()):
+        var collision = get_slide_collision(i)
+        if not collision:
+            continue
+
+        var collider = collision.get_collider()
+        if collider and collider.is_in_group("bees"):
+            var other_bee_state = collider.current_state
+            var bounce_normal = collision.get_normal()
+
+            if current_state == State.RETURNING_TO_HIVE and other_bee_state == State.GOING_TO_TRASH:
+                velocity = velocity.bounce(bounce_normal) * 1.5
+            elif current_state == State.GOING_TO_TRASH and other_bee_state == State.RETURNING_TO_HIVE:
+                velocity = velocity.bounce(bounce_normal) * 5
+            else:
+                velocity = velocity.bounce(bounce_normal)
+            
+            velocity = velocity.rotated(randf_range(-0.2, 0.2))
+            
+            # Start the cooldown so the bounce is visible
+            bounce_cooldown = 0.1
 func reassign_trash_target():
     if current_state == State.RETURNING_TO_HIVE:
         return
