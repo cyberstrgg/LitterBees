@@ -52,6 +52,10 @@ offset_bottom = 31.0
 grow_horizontal = 2
 text = "buybee"
 
+[node name="ScrapLabel" type="Label" parent="Control/CanvasLayer"]
+offset_right = 40.0
+offset_bottom = 23.0
+
 [node name="Trash2" parent="." instance=ExtResource("4_1bvp3")]
 position = Vector2(246, 6)
 health = 2
