@@ -1,0 +1,19 @@
+[gd_scene load_steps=4 format=3 uid="uid://d2e82ja120s8"]
+
+[ext_resource type="Script" uid="uid://dty77uyierl73" path="res://beejob.gd" id="1_v5qog"]
+[ext_resource type="Texture2D" uid="uid://cewcx1wjumnxu" path="res://ants-bees-and-wasps-hymenoptera-medium.png" id="2_q8d8k"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_7mycd"]
+radius = 3.0
+height = 16.0
+
+[node name="Bee" type="CharacterBody2D"]
+script = ExtResource("1_v5qog")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(0, -5.9604645e-08)
+scale = Vector2(0.03750015, 0.037500136)
+texture = ExtResource("2_q8d8k")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CapsuleShape2D_7mycd")
