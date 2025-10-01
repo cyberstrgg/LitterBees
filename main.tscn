@@ -52,4 +52,8 @@ offset_bottom = 31.0
 grow_horizontal = 2
 text = "buybee"
 
+[node name="Trash2" parent="." instance=ExtResource("4_1bvp3")]
+position = Vector2(246, 6)
+health = 2
+
 [connection signal="pressed" from="Control/CanvasLayer/Button" to="." method="_on_button_pressed"]
