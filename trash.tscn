@@ -1,0 +1,19 @@
+[gd_scene load_steps=4 format=3 uid="uid://bcwamvfswossu"]
+
+[ext_resource type="Script" uid="uid://rggkj6qkwwqo" path="res://trash.gd" id="1_43he1"]
+[ext_resource type="Texture2D" uid="uid://c64wiubq2urgr" path="res://mixed-pile-of-trash-with-plastic-bottles-cans-and-food-waste-isolated-transparent-png.webp" id="2_76yqg"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_272bh"]
+radius = 9.0
+height = 28.0
+
+[node name="Trash" type="Node2D"]
+script = ExtResource("1_43he1")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.05, 0.05)
+texture = ExtResource("2_76yqg")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+rotation = 1.5707964
+shape = SubResource("CapsuleShape2D_272bh")

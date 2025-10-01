@@ -1,23 +1,21 @@
 [gd_scene load_steps=6 format=3 uid="uid://cqow47bch5ocs"]
 
 [ext_resource type="Script" uid="uid://dty77uyierl73" path="res://beejob.gd" id="1_h2yge"]
+[ext_resource type="Script" uid="uid://bs2qeucwtife5" path="res://main.gd" id="1_lquwl"]
 [ext_resource type="Texture2D" uid="uid://cewcx1wjumnxu" path="res://ants-bees-and-wasps-hymenoptera-medium.png" id="2_1bvp3"]
-[ext_resource type="Texture2D" uid="uid://c64wiubq2urgr" path="res://mixed-pile-of-trash-with-plastic-bottles-cans-and-food-waste-isolated-transparent-png.webp" id="3_lquwl"]
+[ext_resource type="PackedScene" uid="uid://bcwamvfswossu" path="res://trash.tscn" id="4_1bvp3"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_7mycd"]
 radius = 15.0
 height = 60.0
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_272bh"]
-radius = 9.0
-height = 28.0
-
 [node name="Main" type="Node2D"]
+script = ExtResource("1_lquwl")
 
 [node name="Bee" type="CharacterBody2D" parent="." node_paths=PackedStringArray("trash_node", "hive_node")]
 position = Vector2(-86, 199)
 script = ExtResource("1_h2yge")
-trash_node = NodePath("../Trash")
+trash_node = NodePath("../Trash2")
 hive_node = NodePath("../Hive")
 
 [node name="Sprite2D" type="Sprite2D" parent="Bee"]
@@ -30,15 +28,7 @@ shape = SubResource("CapsuleShape2D_7mycd")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 
-[node name="Trash" type="Node2D" parent="."]
-position = Vector2(125, -254)
-
-[node name="Sprite2D" type="Sprite2D" parent="Trash"]
-scale = Vector2(0.05, 0.05)
-texture = ExtResource("3_lquwl")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Trash"]
-rotation = 1.5707964
-shape = SubResource("CapsuleShape2D_272bh")
-
 [node name="Hive" type="Node2D" parent="."]
+
+[node name="Trash2" parent="." instance=ExtResource("4_1bvp3")]
+position = Vector2(-319, 164)
