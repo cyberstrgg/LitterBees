@@ -1,83 +1,86 @@
+# bee.gd
 extends CharacterBody2D
 
-# --- Variables ---
-# You will drag-and-drop your nodes onto these slots in the Inspector.
-@export var trash_pile_node: Node2D
-@export var garbage_node: Sprite2D
+## --- Variables ---
+# You can set these values in the Inspector panel in the Godot editor.
 
-# NPC's movement speed.
+# How fast the bee moves in pixels per second.
 @export var speed: float = 150.0
 
-# An enum to define the NPC's possible states.
-enum State { MOVING_TO_TRASH, MOVING_TO_CENTER, IDLE }
+# Link to the Trash node in your scene.
+@export var trash_node: Node2D
 
-# The NPC's current state.
+# Link to the Hive node in your scene.
+@export var hive_node: Node2D
+
+# How close the bee needs to be to a target to consider it "arrived".
+@export var arrival_threshold: float = 5.0
+
+# This enum defines the possible states for our bee.
+enum State {
+	IDLE,
+	GOING_TO_TRASH,
+	GOING_TO_HIVE
+}
+
+# This variable holds the bee's current state.
 var current_state: State
 
-# The positions the NPC will move between.
-var center_position: Vector2
-var trash_position: Vector2
 
-# --- Godot Functions ---
+## --- Godot Functions ---
 
-# This function runs once when the scene starts.
-func _ready() -> void:
-	# Calculate the center of the screen.
-	center_position = get_viewport_rect().size / 2
-	
-	# Set the NPC's starting position to the center.
-	global_position = center_position
-	
-	# Get the trash pile's global position.
-	trash_position = trash_pile_node.global_position
-	
-	# Hide the garbage just in case it's visible.
-	garbage_node.visible = false
-	
-	# Start the behavior by telling the NPC to go to the trash.
-	current_state = State.MOVING_TO_TRASH
+# This function is called once when the node enters the scene tree.
+func _ready():
+	# Start the bee's mission as soon as it spawns.
+	current_state = State.GOING_TO_TRASH
 
-# This function runs on every physics frame (best for movement).
-func _physics_process(_delta: float) -> void:
-	# A 'match' statement works like a big if/else block for our states.
+# This function is called every physics frame.
+func _physics_process(delta):
+	# The 'match' statement checks the bee's current state and runs the
+	# corresponding logic for that state.
 	match current_state:
-		State.MOVING_TO_TRASH:
-			move_to(trash_position)
-			# If we are very close to the trash pile...
-			if global_position.distance_to(trash_position) < 5.0:
-				pick_up_garbage()
-				current_state = State.MOVING_TO_CENTER
+		State.IDLE:
+			# If idle, do nothing. Stop moving.
+			velocity = Vector2.ZERO
+			
+		State.GOING_TO_TRASH:
+			# Check if the trash node still exists before moving towards it.
+			if is_instance_valid(trash_node):
+				move_towards_target(trash_node.global_position)
 				
-		State.MOVING_TO_CENTER:
-			move_to(center_position)
-			# If we are very close to the center...
-			if global_position.distance_to(center_position) < 5.0:
-				velocity = Vector2.ZERO # Stop moving.
+				# Check if we have arrived at the trash.
+				if global_position.distance_to(trash_node.global_position) < arrival_threshold:
+					# "Remove" the trash by deleting it from the scene.
+					trash_node.queue_free()
+					# Change state to go to the hive next.
+					current_state = State.GOING_TO_HIVE
+			else:
+				# If trash is already gone, just go to the hive.
+				current_state = State.GOING_TO_HIVE
+				
+		State.GOING_TO_HIVE:
+			# Check if the hive node exists before moving towards it.
+			if is_instance_valid(hive_node):
+				move_towards_target(hive_node.global_position)
+				
+				# Check if we have arrived at the hive.
+				if global_position.distance_to(hive_node.global_position) < arrival_threshold:
+					# We've completed the task. Go idle.
+					current_state = State.IDLE
+					print("Bee has returned to the hive!") # Optional message
+			else:
+				# If the hive doesn't exist, just go idle.
 				current_state = State.IDLE
 				
-		State.IDLE:
-			# Do nothing. The NPC has completed its task.
-			velocity = Vector2.ZERO
-
-# --- Custom Functions ---
-
-# Handles the movement logic.
-func move_to(target_position: Vector2) -> void:
-	# Calculate the direction from the NPC to the target.
-	var direction = global_position.direction_to(target_position)
-	# Set the velocity to move in that direction.
-	velocity = direction * speed
-	# Godot's built-in function to handle movement and collision.
+	# This is the built-in function that actually moves the character.
 	move_and_slide()
 
-# Handles the logic for "picking up" the garbage.
-func pick_up_garbage() -> void:
-	# Move the garbage from the main scene to be a child of the NPC.
-	# This makes the garbage move with the NPC.
-	get_parent().remove_child(garbage_node)
-	add_child(garbage_node)
-	
-	# Make the garbage visible.
-	garbage_node.visible = true
-	# Set its position relative to the NPC (e.g., slightly above it).
-	garbage_node.position = Vector2(0, -30)
+
+## --- Custom Functions ---
+
+# A helper function to handle the movement logic.
+func move_towards_target(target_position: Vector2):
+	# Calculate the direction from the bee to the target.
+	var direction = (target_position - global_position).normalized()
+	# Set the velocity to move in that direction at the defined speed.
+	velocity = direction * speed

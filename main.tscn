@@ -14,11 +14,11 @@ height = 28.0
 
 [node name="Main" type="Node2D"]
 
-[node name="Bee" type="CharacterBody2D" parent="." node_paths=PackedStringArray("trash_pile_node", "garbage_node")]
+[node name="Bee" type="CharacterBody2D" parent="." node_paths=PackedStringArray("trash_node", "hive_node")]
 position = Vector2(-86, 199)
 script = ExtResource("1_h2yge")
-trash_pile_node = NodePath("../Hive")
-garbage_node = NodePath("../Trash/Sprite2D")
+trash_node = NodePath("../Trash")
+hive_node = NodePath("../Hive")
 
 [node name="Sprite2D" type="Sprite2D" parent="Bee"]
 position = Vector2(-0.99993896, -0.9999695)
