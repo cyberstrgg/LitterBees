@@ -7,16 +7,26 @@ extends Node2D
 @export var hive_node: Node2D
 @export var camera_node: Camera2D
 @export var score_label: Label
+@export var buy_bee_button: Button
 
+# --- Gameplay Tweak Variables ---
+# These lines were missing in the previous script.
 @export var hive_exclusion_radius: float = 150.0
-# This line must be present for the error to go away.
 @export var spawn_padding: float = 64.0
 
-var scrap_total = 0
+# --- Purchase Formula Variables ---
+@export var base_bee_cost: int = 15
+@export var bee_price_multiplier: float = 1.15
+var next_bee_cost: int = 0
+# ------------------------------------
+
+var scrap_total: int = 0
 
 func _ready():
     if is_instance_valid(initial_trash_node):
         initial_trash_node.trash_destroyed.connect(on_trash_destroyed)
+    
+    update_bee_cost()
     update_score_label()
 
     await get_tree().process_frame
@@ -24,6 +34,9 @@ func _ready():
     for bee in initial_bees:
         connect_bee_signals(bee)
     
+    if not initial_bees.is_empty():
+        update_bee_cost()
+        
     get_tree().call_group("bees", "reassign_trash_target")
 
 func connect_bee_signals(bee_node):
@@ -33,11 +46,20 @@ func connect_bee_signals(bee_node):
 func on_scrap_delivered():
     scrap_total += 1
     update_score_label()
-    print("Signal received! Scrap total is now: %d" % scrap_total)
 
 func update_score_label():
     if is_instance_valid(score_label):
         score_label.text = "Scrap: %d" % scrap_total
+    update_bee_cost()
+
+func update_bee_cost():
+    var bee_count = get_tree().get_nodes_in_group("bees").size()
+    
+    next_bee_cost = int(base_bee_cost * pow(bee_price_multiplier, bee_count))
+    
+    if is_instance_valid(buy_bee_button):
+        buy_bee_button.text = "Buy Bee (%d Scrap)" % next_bee_cost
+        buy_bee_button.disabled = scrap_total < next_bee_cost
 
 func spawn_bee():
     if not bee_scene: return
@@ -75,4 +97,7 @@ func on_trash_destroyed(_old_position: Vector2, new_health: int):
     get_tree().call_group("bees", "reassign_trash_target")
 
 func _on_button_pressed():
-    spawn_bee()
+    if scrap_total >= next_bee_cost:
+        scrap_total -= next_bee_cost
+        spawn_bee()
+        update_score_label()
