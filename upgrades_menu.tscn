@@ -39,6 +39,7 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="RoomView" type="Control" parent="CenterContainer/PanelContainer/VBoxContainer"]
+custom_minimum_size = Vector2(800, 600)
 layout_mode = 2
 
 [node name="GridContainer" type="GridContainer" parent="CenterContainer/PanelContainer/VBoxContainer/RoomView"]
