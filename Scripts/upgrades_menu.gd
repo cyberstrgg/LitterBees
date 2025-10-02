@@ -7,7 +7,7 @@ signal menu_closed
 @onready var back_button: Button = $CenterContainer/PanelContainer/VBoxContainer/BackButton
 @onready var scrap_label: Label = $CenterContainer/PanelContainer/VBoxContainer/ScrapLabel
 
-const ROOM_SLOT_SCENE = preload("res://room_slot.tscn")
+const ROOM_SLOT_SCENE = preload("res://Scenes/room_slot.tscn")
 
 func _ready():
     process_mode = Node.PROCESS_MODE_ALWAYS

@@ -1,10 +1,10 @@
 [gd_scene load_steps=6 format=3 uid="uid://cqow47bch5ocs"]
 
-[ext_resource type="Script" uid="uid://bs2qeucwtife5" path="res://main.gd" id="1_lquwl"]
-[ext_resource type="PackedScene" uid="uid://b2em6gcsky3mb" path="res://upgrades_menu.tscn" id="2_lquwl"]
+[ext_resource type="Script" uid="uid://bs2qeucwtife5" path="res://Scripts/main.gd" id="1_lquwl"]
+[ext_resource type="PackedScene" uid="uid://b2em6gcsky3mb" path="res://Scenes/upgrades_menu.tscn" id="2_lquwl"]
 [ext_resource type="Texture2D" uid="uid://dfsj5emf3xp71" path="res://Bee_Nest_Honey_%28E%29_JE1.webp" id="3_1bvp3"]
-[ext_resource type="PackedScene" uid="uid://d2e82ja120s8" path="res://bee.tscn" id="3_h2yge"]
-[ext_resource type="PackedScene" uid="uid://bcwamvfswossu" path="res://trash.tscn" id="4_1bvp3"]
+[ext_resource type="PackedScene" uid="uid://d2e82ja120s8" path="res://Scenes/bee.tscn" id="3_h2yge"]
+[ext_resource type="PackedScene" uid="uid://bcwamvfswossu" path="res://Scenes/trash.tscn" id="4_1bvp3"]
 
 [node name="Main" type="Node2D" node_paths=PackedStringArray("initial_trash_node", "hive_node", "camera_node", "score_label", "buy_bee_button")]
 script = ExtResource("1_lquwl")
