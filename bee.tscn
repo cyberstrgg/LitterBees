@@ -7,6 +7,7 @@
 
 [node name="Bee" type="CharacterBody2D"]
 script = ExtResource("1_v5qog")
+wobble_frequency = 3.0
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(0, -5.9604645e-08)
