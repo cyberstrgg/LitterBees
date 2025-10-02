@@ -5,6 +5,7 @@ offset_right = 40.0
 offset_bottom = 40.0
 
 [node name="PanelContainer" type="VBoxContainer" parent="."]
+custom_minimum_size = Vector2(500, 200)
 layout_mode = 2
 
 [node name="InfoLabel" type="Label" parent="PanelContainer"]
