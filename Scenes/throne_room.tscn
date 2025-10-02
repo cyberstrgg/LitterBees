@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=3 uid="uid://ckf6rj7r73qb4"]
+
+[ext_resource type="Script" uid="uid://dy6l7w8wkppjj" path="res://Scripts/throne_room.gd" id="1_savb3"]
+
+[node name="PanelContainer" type="PanelContainer"]
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_savb3")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 2
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 2
+color = Color(0.950465, 0.13781726, 0.464651, 1)
