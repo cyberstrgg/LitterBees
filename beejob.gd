@@ -7,11 +7,15 @@ signal scrap_delivered
 @export var trash_node: Node2D
 @export var hive_node: Node2D
 @export var arrival_threshold: float = 5.0
+
+# --- Gameplay Tweak Variables ---
 @export var wobble_frequency: float = 5.0 # How fast the bee wobbles
 @export var wobble_amplitude: float = 0.5 # How far the bee wobbles side-to-side
 
+# --- Internal State Variables ---
 var is_holding_scrap = false
-var bounce_cooldown: float = 0.0 # <-- ADD THIS LINE
+var bounce_cooldown: float = 0.0
+var wobble_phase_offset: float = 0.0 # Randomizes the wobble pattern per bee
 
 enum State {
     GOING_TO_TRASH,
@@ -24,6 +28,8 @@ func _ready():
     # Add the bee to its group so the main scene can find it.
     add_to_group("bees")
     current_state = State.GOING_TO_TRASH
+    # Give each bee a random starting point in its wobble cycle
+    wobble_phase_offset = randf_range(0, 2 * PI)
 
 func _physics_process(delta):
     # If on cooldown, just count down and don't run the logic below.
@@ -55,8 +61,14 @@ func _physics_process(delta):
                         
                         current_state = State.GOING_TO_TRASH
                         reassign_trash_target()
-    # For sprites that face up
-    rotation = velocity.angle() + PI / 2  
+    
+    # Rotate the bee to face its direction of movement
+    if velocity.length() > 0:
+        # For sprites that face up
+        rotation = velocity.angle() + PI / 2
+        # NOTE: If your bee sprite faces UP instead of RIGHT, uncomment the line below
+        # rotation += PI / 2
+
     move_and_slide()
 
     # Collision check remains the same, but now it SETS the cooldown.
@@ -71,16 +83,17 @@ func _physics_process(delta):
             var bounce_normal = collision.get_normal()
 
             if current_state == State.RETURNING_TO_HIVE and other_bee_state == State.GOING_TO_TRASH:
-                velocity = velocity.bounce(bounce_normal) * 1.5
+                velocity = velocity.bounce(bounce_normal) * .3
             elif current_state == State.GOING_TO_TRASH and other_bee_state == State.RETURNING_TO_HIVE:
-                velocity = velocity.bounce(bounce_normal) * 5
+                velocity = velocity.bounce(bounce_normal) * .6
             else:
                 velocity = velocity.bounce(bounce_normal)
-            
+    
             velocity = velocity.rotated(randf_range(-0.2, 0.2))
             
             # Start the cooldown so the bounce is visible
             bounce_cooldown = 0.1
+
 func reassign_trash_target():
     if current_state == State.RETURNING_TO_HIVE:
         return
@@ -106,9 +119,9 @@ func move_towards_target(target_position: Vector2):
     # The original direction towards the target
     var direction_to_target = (target_position - global_position).normalized()
     
-    # Calculate a sideways "wobble" using a sine wave based on time
+    # Use time and a random offset to create a unique sine wave for the wobble effect
     var time = Time.get_ticks_msec() / 1000.0
-    var wobble_offset = sin(time * wobble_frequency) * wobble_amplitude
+    var wobble_offset = sin(time * wobble_frequency + wobble_phase_offset) * wobble_amplitude
     
     # Get a vector that is perpendicular to the direction of travel
     var perpendicular_vec = direction_to_target.orthogonal()
