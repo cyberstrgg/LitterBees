@@ -1,5 +1,6 @@
 extends Node2D
 
+@export var upgrades_menu_scene: PackedScene
 @export var trash_scene: PackedScene
 @export var bee_scene: PackedScene
 @export var initial_trash_node: Node2D
@@ -101,4 +102,15 @@ func _on_button_pressed():
         update_score_label()
 
 func _on_upgrades_button_pressed():
-    get_tree().change_scene_to_file("res://upgrades_menu.tscn")
+    # Check if the menu is already open to prevent opening multiple instances
+    if get_tree().get_first_node_in_group("upgrades_menu"):
+        return
+
+    # Create an instance of the menu scene
+    var menu = upgrades_menu_scene.instantiate()
+    
+    # Add the menu to a group so we can check if it exists
+    menu.add_to_group("upgrades_menu")
+    
+    # Add the menu to the scene tree, making it visible
+    add_child(menu)

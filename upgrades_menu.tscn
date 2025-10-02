@@ -2,14 +2,8 @@
 
 [ext_resource type="Script" uid="uid://bjdkcx61pda3n" path="res://upgrades_menu.gd" id="1_mc1nf"]
 
-[node name="UpgradesMenu" type="Node2D"]
+[node name="UpgradesMenu" type="CanvasLayer"]
 script = ExtResource("1_mc1nf")
-
-[node name="Camera2D" type="Camera2D" parent="."]
-limit_left = 0
-limit_top = 0
-limit_right = 0
-limit_bottom = 0
 
 [node name="GridContainer" type="GridContainer" parent="."]
 offset_right = 40.0
@@ -18,7 +12,7 @@ columns = 3
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
-[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer"]
+[node name="MarginContainer" type="MarginContainer" parent="."]
 offset_right = 40.0
 offset_bottom = 40.0
 theme_override_constants/margin_left = 10
@@ -26,12 +20,12 @@ theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
 
-[node name="ScrapLabel" type="Label" parent="CanvasLayer/MarginContainer/VBoxContainer"]
+[node name="ScrapLabel" type="Label" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="BackButton" type="Button" parent="CanvasLayer/MarginContainer/VBoxContainer"]
+[node name="BackButton" type="Button" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "Return to Hive"
