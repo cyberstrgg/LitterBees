@@ -60,8 +60,21 @@ offset_right = 40.0
 offset_bottom = 23.0
 text = "Scrap - "
 
+[node name="upgrades_button" type="Button" parent="Control/CanvasLayer"]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -82.0
+offset_top = -31.0
+grow_horizontal = 0
+grow_vertical = 0
+text = "Upgrades"
+
 [node name="Trash2" parent="." instance=ExtResource("4_1bvp3")]
 position = Vector2(246, 6)
 health = 2
 
 [connection signal="pressed" from="Control/CanvasLayer/Button" to="." method="_on_button_pressed"]
+[connection signal="pressed" from="Control/CanvasLayer/upgrades_button" to="." method="_on_upgrades_button_pressed"]

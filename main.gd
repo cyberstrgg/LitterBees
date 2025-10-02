@@ -101,3 +101,8 @@ func _on_button_pressed():
         scrap_total -= next_bee_cost
         spawn_bee()
         update_score_label()
+# In main.gd
+
+func _on_upgrades_button_pressed():
+    # This line unloads the current scene and loads the new one.
+    get_tree().change_scene_to_file("res://upgrades_menu.tscn")
