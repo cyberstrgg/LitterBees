@@ -1,0 +1,32 @@
+[gd_scene load_steps=2 format=3 uid="uid://ikdj38sp720t"]
+
+[ext_resource type="Script" uid="uid://cy672nwjno72q" path="res://Scripts/UpgradeRooms/base_upgrade_room.gd" id="1_w4h07"]
+
+[node name="UpgradeRoom" type="PanelContainer"]
+custom_minimum_size = Vector2(128, 128)
+script = ExtResource("1_w4h07")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="NameLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="LevelLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="EffectLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="UpgradeButton" type="Button" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="DemolishButton" type="Button" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2

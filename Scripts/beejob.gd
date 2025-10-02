@@ -20,11 +20,10 @@ var wobble_phase_offset: float = 0.0 # Randomizes the wobble pattern per bee
 enum State {
     GOING_TO_TRASH,
     RETURNING_TO_HIVE,
-    RECOVERING # New state
+    RECOVERING
 }
 
 var current_state: State
-var current_speed: float # Use this variable for movement
 
 @onready var recovery_timer: Timer = $RecoveryTimer
 
@@ -32,12 +31,12 @@ func _ready():
     add_to_group("bees")
     current_state = State.GOING_TO_TRASH
     wobble_phase_offset = randf_range(0, 2 * PI)
-    # Apply speed upgrade at the start
-    current_speed = base_speed * GlobalUpgrades.bee_speed_multiplier
 
 func _physics_process(delta):
+    # Speed is calculated every frame to reflect upgrades immediately
+    var current_speed = base_speed * GlobalUpgrades.bee_speed_multiplier
+
     if current_state == State.RECOVERING:
-        # When recovering, the bee does nothing.
         velocity = Vector2.ZERO
         move_and_slide()
         return
@@ -48,7 +47,7 @@ func _physics_process(delta):
         match current_state:
             State.GOING_TO_TRASH:
                 if is_instance_valid(trash_node):
-                    move_towards_target(trash_node.global_position)
+                    move_towards_target(trash_node.global_position, current_speed)
                     
                     if global_position.distance_to(trash_node.global_position) < arrival_threshold:
                         trash_node.take_damage(GlobalUpgrades.bee_damage)
@@ -59,7 +58,7 @@ func _physics_process(delta):
                     
             State.RETURNING_TO_HIVE:
                 if is_instance_valid(hive_node):
-                    move_towards_target(hive_node.global_position)
+                    move_towards_target(hive_node.global_position, current_speed)
                     
                     if global_position.distance_to(hive_node.global_position) < arrival_threshold:
                         if is_holding_scrap:
@@ -126,7 +125,7 @@ func reassign_trash_target():
     
     trash_node = closest_trash
 
-func move_towards_target(target_position: Vector2):
+func move_towards_target(target_position: Vector2, speed: float):
     var direction_to_target = (target_position - global_position).normalized()
     
     var time = Time.get_ticks_msec() / 1000.0
@@ -136,4 +135,4 @@ func move_towards_target(target_position: Vector2):
     
     var final_direction = (direction_to_target + perpendicular_vec * wobble_offset).normalized()
 
-    velocity = final_direction * current_speed
+    velocity = final_direction * speed
