@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://b2em6gcsky3mb"]
+[gd_scene load_steps=4 format=3 uid="uid://b2em6gcsky3mb"]
 
 [ext_resource type="Script" uid="uid://bjdkcx61pda3n" path="res://upgrades_menu.gd" id="1_mc1nf"]
+[ext_resource type="Script" uid="uid://bjp15wkghl2jp" path="res://RoomView.gd" id="2_ni86e"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mc1nf"]
 content_margin_left = 10.0
@@ -41,6 +42,7 @@ layout_mode = 2
 [node name="RoomView" type="Control" parent="CenterContainer/PanelContainer/VBoxContainer"]
 custom_minimum_size = Vector2(800, 600)
 layout_mode = 2
+script = ExtResource("2_ni86e")
 
 [node name="GridContainer" type="GridContainer" parent="CenterContainer/PanelContainer/VBoxContainer/RoomView"]
 layout_mode = 0
