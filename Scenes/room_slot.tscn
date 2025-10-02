@@ -3,27 +3,33 @@
 [ext_resource type="Script" uid="uid://brtyv1h7lf0ch" path="res://Scripts/room_slot.gd" id="1_kjnj3"]
 
 [node name="RoomSlot" type="PanelContainer"]
-offset_right = 40.0
-offset_bottom = 40.0
+custom_minimum_size = Vector2(500, 200)
+offset_right = 500.0
+offset_bottom = 200.0
 script = ExtResource("1_kjnj3")
 
 [node name="BuildMenu" type="Panel" parent="."]
+visible = false
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="BuildMenu"]
+[node name="VBoxContainer" type="HBoxContainer" parent="BuildMenu"]
 custom_minimum_size = Vector2(500, 200)
 layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+offset_right = 500.0
+offset_bottom = 200.0
 
 [node name="BuildDamageButton" type="Button" parent="BuildMenu/VBoxContainer"]
 layout_mode = 2
+size_flags_vertical = 0
 
 [node name="BuildSpeedButton" type="Button" parent="BuildMenu/VBoxContainer"]
 layout_mode = 2
+size_flags_vertical = 0
 
 [node name="BuildRecoveryButton" type="Button" parent="BuildMenu/VBoxContainer"]
 layout_mode = 2
+size_flags_vertical = 0
 
 [node name="BuildButton" type="Button" parent="."]
 layout_mode = 2
+text = "Build New Room"

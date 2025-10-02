@@ -4,7 +4,7 @@ extends PanelContainer
 signal build_room_requested(room_type, cost, slot_instance)
 
 # Preload the scripts to get their base costs
-const DamageRoom = preload("res://Scripts/upgraderooms/bees/damage_room.gd")
+const DamageRoom = preload("res://Scripts/UpgradeRooms/bees/damage_room.gd")
 const SpeedRoom = preload("res://Scripts/UpgradeRooms/bees/speed_room.gd")
 const RecoveryRoom = preload("res://Scripts/UpgradeRooms/bees/recovery_room.gd")
 
@@ -50,8 +50,7 @@ func _on_build_room_type_pressed(type: String):
         "recovery":
             emit_signal("build_room_requested", "recovery", recovery_cost, self)
     
-    build_menu.visible = false
-    build_button.visible = true # Reset for the next time a slot is created
+    # No need to change visibility here, as this node will be replaced
 
 # Allows the player to right-click to close the build menu
 func _gui_input(event: InputEvent):

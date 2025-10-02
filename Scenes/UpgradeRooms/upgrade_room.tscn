@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://cy672nwjno72q" path="res://Scripts/UpgradeRooms/base_upgrade_room.gd" id="1_w4h07"]
 
 [node name="UpgradeRoom" type="PanelContainer"]
-custom_minimum_size = Vector2(128, 128)
+custom_minimum_size = Vector2(500, 200)
 script = ExtResource("1_w4h07")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
