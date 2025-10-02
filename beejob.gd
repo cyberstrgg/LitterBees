@@ -102,7 +102,10 @@ func _physics_process(delta):
             # Start the cooldown so the bounce is visible
             bounce_cooldown = 0.1
 
+# beejob.gd
+
 func reassign_trash_target():
+    # This guard clause is correct. Bees holding scrap should not get a new target.
     if current_state == State.RETURNING_TO_HIVE:
         return
 
@@ -110,11 +113,14 @@ func reassign_trash_target():
     var closest_trash: Node2D = null
     var min_distance = INF
 
+    # If there's no trash, just clear the current target and do nothing.
+    # The bee will idle until a new piece of trash is spawned.
     if all_trash.is_empty():
         trash_node = null
-        current_state = State.RETURNING_TO_HIVE
+        # current_state = State.RETURNING_TO_HIVE # <-- DELETE THIS LINE
         return
 
+    # This part of the function is correct and finds the nearest trash.
     for t in all_trash:
         var distance = global_position.distance_to(t.global_position)
         if distance < min_distance:
