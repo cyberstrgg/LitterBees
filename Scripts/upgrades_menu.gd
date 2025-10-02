@@ -43,16 +43,34 @@ func update_scrap_label():
             room.update_ui()
 
 func populate_grid():
-    for i in range(9):
-        var slot
-        # Check if the current slot is the middle one (index 4)
-        if i == 4:
-            slot = THRONE_ROOM_SCENE.instantiate()
-        else:
-            slot = ROOM_SLOT_SCENE.instantiate()
-            # Connect the build signal from the empty slot
-            slot.build_room_requested.connect(on_build_room_requested)
-        grid.add_child(slot)
+    # Clear any existing children before rebuilding
+    for child in grid.get_children():
+        child.queue_free()
+    
+    # Rebuild the grid based on the saved layout in GlobalUpgrades
+    for room_type in GlobalUpgrades.grid_layout:
+        var new_node
+
+        match room_type:
+            "throne":
+                new_node = THRONE_ROOM_SCENE.instantiate()
+            "empty":
+                new_node = ROOM_SLOT_SCENE.instantiate()
+                new_node.build_room_requested.connect(on_build_room_requested)
+            "damage", "speed", "recovery":
+                new_node = UPGRADE_ROOM_SCENE.instantiate()
+                # Attach the correct specific script
+                if room_type == "damage":
+                    new_node.set_script(DamageRoom)
+                elif room_type == "speed":
+                    new_node.set_script(SpeedRoom)
+                elif room_type == "recovery":
+                    new_node.set_script(RecoveryRoom)
+                new_node.room_demolished.connect(on_room_demolished)
+        
+        if is_instance_valid(new_node):
+            grid.add_child(new_node)
+
 
 func on_build_room_requested(room_type: String, cost: int, slot_instance: Node):
     if GlobalUpgrades.scrap_total < cost:
@@ -61,43 +79,32 @@ func on_build_room_requested(room_type: String, cost: int, slot_instance: Node):
     
     GlobalUpgrades.scrap_total -= cost
     
-    # Create an instance of the generic upgrade room scene
-    var new_room = UPGRADE_ROOM_SCENE.instantiate()
-    
-    # Attach the correct specific script based on the chosen type
-    match room_type:
-        "damage":
-            new_room.set_script(DamageRoom)
-        "speed":
-            new_room.set_script(SpeedRoom)
-        "recovery":
-            new_room.set_script(RecoveryRoom)
-    
-    # Connect the demolish signal from the new room
-    new_room.room_demolished.connect(on_room_demolished)
-    
-    # Replace the old slot with the new room in the grid
+    # Update the global state
     var slot_index = slot_instance.get_index()
-    grid.add_child(new_room)
-    grid.move_child(new_room, slot_index)
-    slot_instance.queue_free()
+    GlobalUpgrades.grid_layout[slot_index] = room_type
     
+    # Call the new central function
+    GlobalUpgrades.recalculate_all_stats()
+    
+    # Rebuild the visual grid and update UI
+    populate_grid()
     update_scrap_label()
+
 
 func on_room_demolished(refund_amount: int, room_instance: Node):
     GlobalUpgrades.scrap_total += refund_amount
     
-    # Create a new empty slot to replace the demolished room
-    var new_slot = ROOM_SLOT_SCENE.instantiate()
-    new_slot.build_room_requested.connect(on_build_room_requested)
-    
-    # Place the new slot where the old room was
+    # Update the global state
     var room_index = room_instance.get_index()
-    grid.add_child(new_slot)
-    grid.move_child(new_slot, room_index)
-    # The room instance queue_free()s itself when demolished
+    GlobalUpgrades.grid_layout[room_index] = "empty"
+
+    # Call the new central function
+    GlobalUpgrades.recalculate_all_stats()
     
+    # Rebuild the visual grid and update UI
+    populate_grid()
     update_scrap_label()
+
 
 func center_on_throne_room():
     # The throne room is the 5th child added to the grid (index 4)
