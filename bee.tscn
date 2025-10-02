@@ -16,3 +16,8 @@ texture = ExtResource("2_q8d8k")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_v5qog")
+
+[node name="RecoveryTimer" type="Timer" parent="."]
+one_shot = true
+
+[connection signal="timeout" from="RecoveryTimer" to="." method="_on_recovery_timer_timeout"]

@@ -1,4 +1,3 @@
-# main.gd
 extends Node2D
 
 @export var trash_scene: PackedScene
@@ -10,7 +9,6 @@ extends Node2D
 @export var buy_bee_button: Button
 
 # --- Gameplay Tweak Variables ---
-# These lines were missing in the previous script.
 @export var hive_exclusion_radius: float = 150.0
 @export var spawn_padding: float = 64.0
 
@@ -18,25 +16,21 @@ extends Node2D
 @export var base_bee_cost: int = 15
 @export var bee_price_multiplier: float = 1.15
 var next_bee_cost: int = 0
-# ------------------------------------
 
-var scrap_total: int = 0
+# --- scrap_total is now in GlobalUpgrades.gd ---
+# var scrap_total: int = 0 <-- DELETE THIS LINE
 
 func _ready():
     if is_instance_valid(initial_trash_node):
         initial_trash_node.trash_destroyed.connect(on_trash_destroyed)
     
-    update_bee_cost()
-    update_score_label()
+    update_score_label() # This will now pull from the global script
 
     await get_tree().process_frame
     var initial_bees = get_tree().get_nodes_in_group("bees")
     for bee in initial_bees:
         connect_bee_signals(bee)
     
-    if not initial_bees.is_empty():
-        update_bee_cost()
-        
     get_tree().call_group("bees", "reassign_trash_target")
 
 func connect_bee_signals(bee_node):
@@ -44,22 +38,24 @@ func connect_bee_signals(bee_node):
         bee_node.scrap_delivered.connect(on_scrap_delivered)
 
 func on_scrap_delivered():
-    scrap_total += 1
+    # --- Modify this line ---
+    GlobalUpgrades.scrap_total += 1
     update_score_label()
 
 func update_score_label():
     if is_instance_valid(score_label):
-        score_label.text = "Scrap: %d" % scrap_total
+        # --- Modify this line ---
+        score_label.text = "Scrap: %d" % GlobalUpgrades.scrap_total
     update_bee_cost()
 
 func update_bee_cost():
     var bee_count = get_tree().get_nodes_in_group("bees").size()
-    
     next_bee_cost = int(base_bee_cost * pow(bee_price_multiplier, bee_count))
     
     if is_instance_valid(buy_bee_button):
         buy_bee_button.text = "Buy Bee (%d Scrap)" % next_bee_cost
-        buy_bee_button.disabled = scrap_total < next_bee_cost
+        # --- Modify this line ---
+        buy_bee_button.disabled = GlobalUpgrades.scrap_total < next_bee_cost
 
 func spawn_bee():
     if not bee_scene: return
@@ -97,12 +93,12 @@ func on_trash_destroyed(_old_position: Vector2, new_health: int):
     get_tree().call_group("bees", "reassign_trash_target")
 
 func _on_button_pressed():
-    if scrap_total >= next_bee_cost:
-        scrap_total -= next_bee_cost
+    # --- Modify this line ---
+    if GlobalUpgrades.scrap_total >= next_bee_cost:
+        # --- And this line ---
+        GlobalUpgrades.scrap_total -= next_bee_cost
         spawn_bee()
         update_score_label()
-# In main.gd
 
 func _on_upgrades_button_pressed():
-    # This line unloads the current scene and loads the new one.
     get_tree().change_scene_to_file("res://upgrades_menu.tscn")

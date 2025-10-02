@@ -3,7 +3,7 @@ extends CharacterBody2D
 
 signal scrap_delivered
 
-@export var speed: float = 150.0
+@export var base_speed: float = 150.0
 @export var trash_node: Node2D
 @export var hive_node: Node2D
 @export var arrival_threshold: float = 5.0
@@ -19,31 +19,39 @@ var wobble_phase_offset: float = 0.0 # Randomizes the wobble pattern per bee
 
 enum State {
     GOING_TO_TRASH,
-    RETURNING_TO_HIVE
+    RETURNING_TO_HIVE,
+    RECOVERING # New state
 }
 
 var current_state: State
+var current_speed: float # Use this variable for movement
+
+@onready var recovery_timer: Timer = $RecoveryTimer
 
 func _ready():
-    # Add the bee to its group so the main scene can find it.
     add_to_group("bees")
     current_state = State.GOING_TO_TRASH
-    # Give each bee a random starting point in its wobble cycle
     wobble_phase_offset = randf_range(0, 2 * PI)
+    # Apply speed upgrade at the start
+    current_speed = base_speed * GlobalUpgrades.bee_speed_multiplier
 
 func _physics_process(delta):
-    # If on cooldown, just count down and don't run the logic below.
+    if current_state == State.RECOVERING:
+        # When recovering, the bee does nothing.
+        velocity = Vector2.ZERO
+        move_and_slide()
+        return
+
     if bounce_cooldown > 0:
         bounce_cooldown -= delta
     else:
-        # Standard movement logic only runs when not on cooldown.
         match current_state:
             State.GOING_TO_TRASH:
                 if is_instance_valid(trash_node):
                     move_towards_target(trash_node.global_position)
                     
                     if global_position.distance_to(trash_node.global_position) < arrival_threshold:
-                        trash_node.take_damage(1)
+                        trash_node.take_damage(GlobalUpgrades.bee_damage)
                         is_holding_scrap = true
                         current_state = State.RETURNING_TO_HIVE
                 else:
@@ -55,23 +63,21 @@ func _physics_process(delta):
                     
                     if global_position.distance_to(hive_node.global_position) < arrival_threshold:
                         if is_holding_scrap:
-                            print("Bee at hive with scrap, emitting signal.")
                             scrap_delivered.emit()
                             is_holding_scrap = false
                         
-                        current_state = State.GOING_TO_TRASH
-                        reassign_trash_target()
+                        current_state = State.RECOVERING
+                        recovery_timer.start(GlobalUpgrades.hive_recovery_cooldown)
+                else:
+                    # If hive is gone, just find new trash.
+                    current_state = State.GOING_TO_TRASH
+                    reassign_trash_target()
     
-    # Rotate the bee to face its direction of movement
     if velocity.length() > 0:
-        # For sprites that face right
         rotation = velocity.angle() + PI / 2
-        # NOTE: If your bee sprite faces UP instead of RIGHT, uncomment the line below
-        # rotation += PI / 2
 
     move_and_slide()
 
-    # --- COLLISION LOGIC MOVED INSIDE THE FUNCTION ---
     for i in range(get_slide_collision_count()):
         var collision = get_slide_collision(i)
         if not collision:
@@ -82,30 +88,25 @@ func _physics_process(delta):
             var other_bee_state = collider.current_state
             var bounce_normal = collision.get_normal()
 
-            # If THIS bee is going to trash and hits a returning bee...
             if current_state == State.GOING_TO_TRASH and other_bee_state == State.RETURNING_TO_HIVE:
-                # ...it gets bounced away forcefully.
                 velocity = velocity.bounce(bounce_normal) * 0.3
             
-            # If THIS bee is returning with scrap...
             elif current_state == State.RETURNING_TO_HIVE and other_bee_state == State.GOING_TO_TRASH:
-                # ...it does nothing. It barrels through.
                 pass
             
-            # If bees are in the same state, they bounce normally.
             else:
                 velocity = velocity.bounce(bounce_normal)
 
-            # Apply a little randomness to prevent bees from getting stuck
             velocity = velocity.rotated(randf_range(-0.2, 0.2))
             
-            # Start the cooldown so the bounce is visible
             bounce_cooldown = 0.1
 
-# beejob.gd
+func _on_recovery_timer_timeout():
+    # When the timer finishes, go back to work.
+    current_state = State.GOING_TO_TRASH
+    reassign_trash_target()
 
 func reassign_trash_target():
-    # This guard clause is correct. Bees holding scrap should not get a new target.
     if current_state == State.RETURNING_TO_HIVE:
         return
 
@@ -113,14 +114,10 @@ func reassign_trash_target():
     var closest_trash: Node2D = null
     var min_distance = INF
 
-    # If there's no trash, just clear the current target and do nothing.
-    # The bee will idle until a new piece of trash is spawned.
     if all_trash.is_empty():
         trash_node = null
-        # current_state = State.RETURNING_TO_HIVE # <-- DELETE THIS LINE
         return
 
-    # This part of the function is correct and finds the nearest trash.
     for t in all_trash:
         var distance = global_position.distance_to(t.global_position)
         if distance < min_distance:
@@ -130,18 +127,13 @@ func reassign_trash_target():
     trash_node = closest_trash
 
 func move_towards_target(target_position: Vector2):
-    # The original direction towards the target
     var direction_to_target = (target_position - global_position).normalized()
     
-    # Use time and a random offset to create a unique sine wave for the wobble effect
     var time = Time.get_ticks_msec() / 1000.0
     var wobble_offset = sin(time * wobble_frequency + wobble_phase_offset) * wobble_amplitude
     
-    # Get a vector that is perpendicular to the direction of travel
     var perpendicular_vec = direction_to_target.orthogonal()
     
-    # Combine the forward direction with the sideways wobble and normalize it
     var final_direction = (direction_to_target + perpendicular_vec * wobble_offset).normalized()
 
-    # Set the final velocity
-    velocity = final_direction * speed
+    velocity = final_direction * current_speed
