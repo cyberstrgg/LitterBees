@@ -64,14 +64,14 @@ func _physics_process(delta):
     
     # Rotate the bee to face its direction of movement
     if velocity.length() > 0:
-        # For sprites that face up
+        # For sprites that face right
         rotation = velocity.angle() + PI / 2
         # NOTE: If your bee sprite faces UP instead of RIGHT, uncomment the line below
         # rotation += PI / 2
 
     move_and_slide()
 
-    # Collision check remains the same, but now it SETS the cooldown.
+    # --- COLLISION LOGIC MOVED INSIDE THE FUNCTION ---
     for i in range(get_slide_collision_count()):
         var collision = get_slide_collision(i)
         if not collision:
@@ -82,13 +82,21 @@ func _physics_process(delta):
             var other_bee_state = collider.current_state
             var bounce_normal = collision.get_normal()
 
-            if current_state == State.RETURNING_TO_HIVE and other_bee_state == State.GOING_TO_TRASH:
-                velocity = velocity.bounce(bounce_normal) * .3
-            elif current_state == State.GOING_TO_TRASH and other_bee_state == State.RETURNING_TO_HIVE:
-                velocity = velocity.bounce(bounce_normal) * .6
+            # If THIS bee is going to trash and hits a returning bee...
+            if current_state == State.GOING_TO_TRASH and other_bee_state == State.RETURNING_TO_HIVE:
+                # ...it gets bounced away forcefully.
+                velocity = velocity.bounce(bounce_normal) * 0.3
+            
+            # If THIS bee is returning with scrap...
+            elif current_state == State.RETURNING_TO_HIVE and other_bee_state == State.GOING_TO_TRASH:
+                # ...it does nothing. It barrels through.
+                pass
+            
+            # If bees are in the same state, they bounce normally.
             else:
                 velocity = velocity.bounce(bounce_normal)
-    
+
+            # Apply a little randomness to prevent bees from getting stuck
             velocity = velocity.rotated(randf_range(-0.2, 0.2))
             
             # Start the cooldown so the bounce is visible
