@@ -40,6 +40,7 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="RoomView" type="Control" parent="CenterContainer/PanelContainer/VBoxContainer"]
+clip_contents = true
 custom_minimum_size = Vector2(800, 600)
 layout_mode = 2
 script = ExtResource("2_ni86e")
