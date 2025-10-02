@@ -55,7 +55,8 @@ func _physics_process(delta):
                         
                         current_state = State.GOING_TO_TRASH
                         reassign_trash_target()
-            
+    # For sprites that face up
+    rotation = velocity.angle() + PI / 2  
     move_and_slide()
 
     # Collision check remains the same, but now it SETS the cooldown.
