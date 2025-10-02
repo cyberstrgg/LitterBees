@@ -7,6 +7,8 @@ signal scrap_delivered
 @export var trash_node: Node2D
 @export var hive_node: Node2D
 @export var arrival_threshold: float = 5.0
+@export var wobble_frequency: float = 5.0 # How fast the bee wobbles
+@export var wobble_amplitude: float = 0.5 # How far the bee wobbles side-to-side
 
 var is_holding_scrap = false
 var bounce_cooldown: float = 0.0 # <-- ADD THIS LINE
@@ -100,5 +102,18 @@ func reassign_trash_target():
     trash_node = closest_trash
 
 func move_towards_target(target_position: Vector2):
-    var direction = (target_position - global_position).normalized()
-    velocity = direction * speed
+    # The original direction towards the target
+    var direction_to_target = (target_position - global_position).normalized()
+    
+    # Calculate a sideways "wobble" using a sine wave based on time
+    var time = Time.get_ticks_msec() / 1000.0
+    var wobble_offset = sin(time * wobble_frequency) * wobble_amplitude
+    
+    # Get a vector that is perpendicular to the direction of travel
+    var perpendicular_vec = direction_to_target.orthogonal()
+    
+    # Combine the forward direction with the sideways wobble and normalize it
+    var final_direction = (direction_to_target + perpendicular_vec * wobble_offset).normalized()
+
+    # Set the final velocity
+    velocity = final_direction * speed
