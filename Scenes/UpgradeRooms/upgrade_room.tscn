@@ -1,32 +1,49 @@
-[gd_scene load_steps=2 format=3 uid="uid://ikdj38sp720t"]
+[gd_scene load_steps=3 format=3 uid="uid://ikdj38sp720t"]
 
 [ext_resource type="Script" uid="uid://cy672nwjno72q" path="res://Scripts/UpgradeRooms/base_upgrade_room.gd" id="1_w4h07"]
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_lq8f5"]
+
 [node name="UpgradeRoom" type="PanelContainer"]
-custom_minimum_size = Vector2(500, 200)
+custom_minimum_size = Vector2(300, 300)
+theme_override_styles/panel = SubResource("StyleBoxEmpty_lq8f5")
 script = ExtResource("1_w4h07")
 
+[node name="Polygon2D" type="Polygon2D" parent="."]
+
 [node name="MarginContainer" type="MarginContainer" parent="."]
-layout_mode = 2
-theme_override_constants/margin_left = 8
-theme_override_constants/margin_top = 8
-theme_override_constants/margin_right = 8
-theme_override_constants/margin_bottom = 8
+layout_mode = 1
+anchors_preset = 15
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+[node name="CenterContainer" type="CenterContainer" parent="MarginContainer"]
 layout_mode = 2
 
-[node name="NameLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/CenterContainer"]
+custom_minimum_size = Vector2(220, 0)
 layout_mode = 2
+theme_override_constants/separation = 10
 
-[node name="LevelLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+[node name="NameLabel" type="Label" parent="MarginContainer/CenterContainer/VBoxContainer"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Room Name"
+horizontal_alignment = 1
 
-[node name="EffectLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+[node name="LevelLabel" type="Label" parent="MarginContainer/CenterContainer/VBoxContainer"]
 layout_mode = 2
+text = "Level: X"
+horizontal_alignment = 1
 
-[node name="UpgradeButton" type="Button" parent="MarginContainer/VBoxContainer"]
+[node name="EffectLabel" type="Label" parent="MarginContainer/CenterContainer/VBoxContainer"]
 layout_mode = 2
+text = "Effect: TBD"
+autowrap_mode = 3
+horizontal_alignment = 1
 
-[node name="DemolishButton" type="Button" parent="MarginContainer/VBoxContainer"]
+[node name="UpgradeButton" type="Button" parent="MarginContainer/CenterContainer/VBoxContainer"]
 layout_mode = 2
+text = "Upgrade"
+
+[node name="DemolishButton" type="Button" parent="MarginContainer/CenterContainer/VBoxContainer"]
+layout_mode = 2
+text = "Demolish"

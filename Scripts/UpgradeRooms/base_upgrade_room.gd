@@ -16,13 +16,25 @@ var level: int = 1
 var total_scrap_invested: int = 0
 
 # --- Node References ---
-@onready var name_label: Label = $MarginContainer/VBoxContainer/NameLabel
-@onready var level_label: Label = $MarginContainer/VBoxContainer/LevelLabel
-@onready var effect_label: Label = $MarginContainer/VBoxContainer/EffectLabel
-@onready var upgrade_button: Button = $MarginContainer/VBoxContainer/UpgradeButton
-@onready var demolish_button: Button = $MarginContainer/VBoxContainer/DemolishButton
+@onready var name_label: Label = $MarginContainer/CenterContainer/VBoxContainer/NameLabel
+@onready var level_label: Label = $MarginContainer/CenterContainer/VBoxContainer/LevelLabel
+@onready var effect_label: Label = $MarginContainer/CenterContainer/VBoxContainer/EffectLabel
+@onready var upgrade_button: Button = $MarginContainer/CenterContainer/VBoxContainer/UpgradeButton
+@onready var demolish_button: Button = $MarginContainer/CenterContainer/VBoxContainer/DemolishButton
+@onready var polygon_2d: Polygon2D = $Polygon2D
 
 func _ready():
+    # Draw the hexagon background
+    var size = self.custom_minimum_size
+    var center = size / 2.0
+    var hexagon_points = PackedVector2Array()
+    for i in range(6):
+        var angle_deg = 60 * i + 30 # Pointy-top
+        var angle_rad = deg_to_rad(angle_deg)
+        hexagon_points.append(center + Vector2(center.x * cos(angle_rad), center.y * sin(angle_rad)))
+    polygon_2d.polygon = hexagon_points
+    polygon_2d.color = Color(0.3, 0.3, 0.35) # Base color for upgrade rooms
+
     # Connect button signals
     upgrade_button.pressed.connect(_on_upgrade_button_pressed)
     demolish_button.pressed.connect(_on_demolish_button_pressed)
