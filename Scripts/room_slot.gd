@@ -1,6 +1,6 @@
 extends PanelContainer
 
-signal build_room_requested(room_type, cost, slot_instance)
+signal build_room_requested(room_type, cost, axial_coordinates)
 
 # Preload the scripts to get their base costs
 const DamageRoom = preload("res://Scripts/UpgradeRooms/bees/damage_room.gd")
@@ -18,22 +18,22 @@ var damage_cost: int
 var speed_cost: int
 var recovery_cost: int
 
+var axial_coordinates: Vector2i # To store its position in the hex grid
+
 func _ready():
-    # ADD THE CODE BELOW TO DRAW THE HEXAGON
+    # Draw the hexagon background
     var size = self.custom_minimum_size
     var center = size / 2.0
-    var hexagon_points = PackedVector2Array([
-        Vector2(center.x, 0),
-        Vector2(size.x, size.y * 0.25),
-        Vector2(size.x, size.y * 0.75),
-        Vector2(center.x, size.y),
-        Vector2(0, size.y * 0.75),
-        Vector2(0, size.y * 0.25)
-    ])
+    var hexagon_points = PackedVector2Array()
+    # Pointy-top hexagon points
+    for i in range(6):
+        var angle_deg = 60 * i + 30 # Add 30 degrees to make it pointy-top
+        var angle_rad = deg_to_rad(angle_deg)
+        hexagon_points.append(center + Vector2(center.x * cos(angle_rad), center.y * sin(angle_rad)))
+    
     polygon_2d.polygon = hexagon_points
-    polygon_2d.color = Color(0.2, 0.2, 0.2, 0.8) # Optional: set a color for the hexagon
+    polygon_2d.color = Color(0.2, 0.2, 0.2, 0.8)
 
-    # --- EXISTING CODE ---
     # Connect signals
     build_button.pressed.connect(_on_build_button_pressed)
     build_damage_button.pressed.connect(_on_build_room_type_pressed.bind("damage"))
@@ -46,6 +46,10 @@ func _ready():
     recovery_cost = RecoveryRoom.new().base_cost
     
     update_button_text()
+    
+    # Center the build menu inside the slot
+    build_menu.position = (size - build_menu.custom_minimum_size) / 2.0
+
 
 func update_button_text():
     build_damage_button.text = "Barracks (%d)" % damage_cost
@@ -59,11 +63,11 @@ func _on_build_button_pressed():
 func _on_build_room_type_pressed(type: String):
     match type:
         "damage":
-            emit_signal("build_room_requested", "damage", damage_cost, self)
+            emit_signal("build_room_requested", "damage", damage_cost, axial_coordinates)
         "speed":
-            emit_signal("build_room_requested", "speed", speed_cost, self)
+            emit_signal("build_room_requested", "speed", speed_cost, axial_coordinates)
         "recovery":
-            emit_signal("build_room_requested", "recovery", recovery_cost, self)
+            emit_signal("build_room_requested", "recovery", recovery_cost, axial_coordinates)
 
 # Allows the player to right-click to close the build menu
 func _gui_input(event: InputEvent):

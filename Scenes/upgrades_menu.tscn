@@ -45,12 +45,7 @@ custom_minimum_size = Vector2(800, 600)
 layout_mode = 2
 script = ExtResource("2_ni86e")
 
-[node name="GridContainer" type="GridContainer" parent="CenterContainer/PanelContainer/VBoxContainer/RoomView"]
-layout_mode = 0
-offset_top = -39.0
-offset_right = 120.0
-offset_bottom = -39.0
-columns = 3
+[node name="GridContainer" type="Node2D" parent="CenterContainer/PanelContainer/VBoxContainer/RoomView"]
 
 [node name="BackButton" type="Button" parent="CenterContainer/PanelContainer/VBoxContainer"]
 layout_mode = 2

@@ -1,6 +1,6 @@
 extends Control
 
-@onready var grid_container: GridContainer = $GridContainer
+@onready var grid_container: Node2D = $GridContainer # Changed from GridContainer
 var is_panning: bool = false
 
 # This function is automatically called when a mouse event happens inside this control.

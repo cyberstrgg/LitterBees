@@ -3,13 +3,20 @@ extends Node
 
 # --- Scrap Variable ---
 var scrap_total: int = 50
+const NEW_SLOT_COST: int = 75 # Cost to unlock a new empty slot
 
 # --- Room Grid State ---
-var grid_layout: Array[String] = [
-    "empty", "empty", "empty",
-    "empty", "throne", "empty",
-    "empty", "empty", "empty"
-]
+# Dictionary mapping Vector2i (axial coordinates) to room type (String)
+var grid_layout: Dictionary = {
+    Vector2i(0, 0): "throne",
+    Vector2i(1, 0): "empty",
+    Vector2i(-1, 0): "empty",
+    Vector2i(0, 1): "empty",
+    Vector2i(0, -1): "empty",
+    Vector2i(1, -1): "empty",
+    Vector2i(-1, 1): "empty"
+}
+
 
 # --- Base Stats ---
 const BASE_BEE_DAMAGE: int = 1
@@ -35,7 +42,7 @@ func recalculate_all_stats():
     hive_recovery_cooldown = BASE_HIVE_RECOVERY
     
     # 2. Loop through the grid and apply bonuses
-    for room_type in grid_layout:
+    for room_type in grid_layout.values(): # Iterate over dictionary values
         match room_type:
             "damage":
                 bee_damage += DAMAGE_ROOM_BONUS
