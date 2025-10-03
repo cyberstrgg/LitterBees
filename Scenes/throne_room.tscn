@@ -1,15 +1,23 @@
-[gd_scene load_steps=2 format=3 uid="uid://ckf6rj7r73qb4"]
+[gd_scene load_steps=3 format=3 uid="uid://ckf6rj7r73qb4"]
 
 [ext_resource type="Script" uid="uid://dy6l7w8wkppjj" path="res://Scripts/throne_room.gd" id="1_savb3"]
 
-[node name="PanelContainer" type="PanelContainer"]
-offset_right = 40.0
-offset_bottom = 40.0
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_m8kix"]
+
+[node name="PanelContainer" type="PanelContainer" node_paths=PackedStringArray("polygon_2d")]
+custom_minimum_size = Vector2(300, 300)
+theme_override_styles/panel = SubResource("StyleBoxEmpty_m8kix")
 script = ExtResource("1_savb3")
+polygon_2d = NodePath("Polygon2D")
+
+[node name="Polygon2D" type="Polygon2D" parent="."]
+color = Color(1, 0.843137, 0, 1)
 
 [node name="TextureRect" type="TextureRect" parent="."]
 layout_mode = 2
 
-[node name="ColorRect" type="ColorRect" parent="."]
+[node name="Label" type="Label" parent="."]
 layout_mode = 2
-color = Color(0.950465, 0.13781726, 0.464651, 1)
+text = "Throne Room"
+horizontal_alignment = 1
+vertical_alignment = 1
