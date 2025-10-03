@@ -74,21 +74,38 @@ func on_trash_destroyed(_old_position: Vector2, new_health: int):
 	
 	get_tree().call_group("bees", "reassign_trash_target")
 
+func close_all_popups():
+	# Find and close the shop menu if it exists
+	var shop_menu = get_tree().get_first_node_in_group("shop_menu")
+	if shop_menu:
+		shop_menu.queue_free()
+	
+	# Find and close the upgrades menu if it exists
+	var upgrades_menu = get_tree().get_first_node_in_group("upgrades_menu")
+	if upgrades_menu:
+		upgrades_menu.queue_free()
+
 func _on_shop_button_pressed():
-	var existing_menu = get_tree().get_first_node_in_group("shop_menu")
-	if existing_menu:
-		existing_menu.queue_free()
-	else:
+	# First, check if the shop was already open
+	var was_open = get_tree().get_first_node_in_group("shop_menu") != null
+	# Then, close all menus
+	close_all_popups()
+	
+	# If the shop wasn't the one we just closed, open it now
+	if not was_open:
 		var menu = shop_menu_scene.instantiate()
 		menu.add_to_group("shop_menu")
 		menu.bee_purchased.connect(spawn_bee)
 		add_child(menu)
 
 func _on_upgrades_button_pressed():
-	var existing_menu = get_tree().get_first_node_in_group("upgrades_menu")
-	if existing_menu:
-		existing_menu.queue_free()
-	else:
+	# First, check if the upgrades menu was already open
+	var was_open = get_tree().get_first_node_in_group("upgrades_menu") != null
+	# Then, close all menus
+	close_all_popups()
+
+	# If the upgrades menu wasn't the one we just closed, open it now
+	if not was_open:
 		var menu = upgrades_menu_scene.instantiate()
 		menu.add_to_group("upgrades_menu")
 		add_child(menu)
