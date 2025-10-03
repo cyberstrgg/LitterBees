@@ -2,20 +2,17 @@
 extends Node2D
 
 @export var upgrades_menu_scene: PackedScene
-@export var shop_menu_scene: PackedScene # Add this new export
+@export var shop_menu_scene: PackedScene
 @export var trash_scene: PackedScene
 @export var bee_scene: PackedScene
 @export var initial_trash_node: Node2D
 @export var hive_node: Node2D
 @export var camera_node: Camera2D
 @export var score_label: Label
-@export var shop_button: Button # Changed from buy_bee_button
+@export var shop_button: Button
 
-# --- Gameplay Tweak Variables ---
 @export var hive_exclusion_radius: float = 150.0
 @export var spawn_padding: float = 64.0
-
-# --- The bee cost variables are now handled by GlobalUpgrades ---
 
 func _ready():
 	if is_instance_valid(initial_trash_node):
@@ -41,10 +38,8 @@ func on_scrap_delivered():
 func update_score_label():
 	if is_instance_valid(score_label):
 		score_label.text = "Scrap: %d" % GlobalUpgrades.scrap_total
-	# The dedicated bee cost label is no longer needed
 
 func spawn_bee(bee_type: String = "standard_bee"):
-	# This function now takes a parameter, though we only have one type for now.
 	if not bee_scene: return
 
 	var new_bee = bee_scene.instantiate()
@@ -79,26 +74,21 @@ func on_trash_destroyed(_old_position: Vector2, new_health: int):
 	
 	get_tree().call_group("bees", "reassign_trash_target")
 
-# This function now opens the shop instead of buying a bee directly
 func _on_shop_button_pressed():
-	if get_tree().get_first_node_in_group("shop_menu"):
-		return
-
-	var menu = shop_menu_scene.instantiate()
-	menu.add_to_group("shop_menu")
-	menu.bee_purchased.connect(spawn_bee)
-	add_child(menu)
+	var existing_menu = get_tree().get_first_node_in_group("shop_menu")
+	if existing_menu:
+		existing_menu.queue_free()
+	else:
+		var menu = shop_menu_scene.instantiate()
+		menu.add_to_group("shop_menu")
+		menu.bee_purchased.connect(spawn_bee)
+		add_child(menu)
 
 func _on_upgrades_button_pressed():
-	# Check if the menu is already open to prevent opening multiple instances
-	if get_tree().get_first_node_in_group("upgrades_menu"):
-		return
-
-	# Create an instance of the menu scene
-	var menu = upgrades_menu_scene.instantiate()
-	
-	# Add the menu to a group so we can check if it exists
-	menu.add_to_group("upgrades_menu")
-	
-	# Add the menu to the scene tree, making it visible
-	add_child(menu)
+	var existing_menu = get_tree().get_first_node_in_group("upgrades_menu")
+	if existing_menu:
+		existing_menu.queue_free()
+	else:
+		var menu = upgrades_menu_scene.instantiate()
+		menu.add_to_group("upgrades_menu")
+		add_child(menu)

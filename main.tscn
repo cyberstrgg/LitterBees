@@ -49,30 +49,35 @@ grow_vertical = 2
 [node name="CanvasLayer" type="CanvasLayer" parent="Control"]
 
 [node name="ShopButton" type="Button" parent="Control/CanvasLayer"]
-anchors_preset = 7
-anchor_left = 0.5
+anchors_preset = 2
 anchor_top = 1.0
-anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -38.0
-offset_top = -40.0
-offset_right = 38.0
-grow_horizontal = 2
+offset_left = 10.0
+offset_top = -41.0
+offset_right = 92.0
+offset_bottom = -10.0
 grow_vertical = 0
 text = "Shop"
 
 [node name="ScrapLabel" type="Label" parent="Control/CanvasLayer"]
-offset_right = 80.0
-offset_bottom = 26.0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 90.0
+offset_bottom = 36.0
 text = "Scrap - "
 
 [node name="upgrades_button" type="Button" parent="Control/CanvasLayer"]
-anchors_preset = 1
+anchors_preset = 3
 anchor_left = 1.0
+anchor_top = 1.0
 anchor_right = 1.0
-offset_left = -82.0
-offset_bottom = 31.0
+anchor_bottom = 1.0
+offset_left = -92.0
+offset_top = -41.0
+offset_right = -10.0
+offset_bottom = -10.0
 grow_horizontal = 0
+grow_vertical = 0
 text = "Upgrades"
 
 [node name="Trash2" parent="." instance=ExtResource("4_1bvp3")]
