@@ -8,6 +8,8 @@ shader = ExtResource("2_cgd4t")
 shader_parameter/aspect_ratio = 1.0
 
 [node name="UpgradeRoom" type="Control"]
+clip_contents = true
+material = SubResource("ShaderMaterial_q32t4")
 custom_minimum_size = Vector2(300, 300)
 layout_mode = 3
 anchors_preset = 0
@@ -15,13 +17,7 @@ offset_right = 300.0
 offset_bottom = 300.0
 script = ExtResource("1_w4h07")
 
-[node name="InputBlocker" type="Panel" parent="."]
-material = SubResource("ShaderMaterial_q32t4")
-layout_mode = 1
-anchors_preset = 15
-
 [node name="Polygon2D" type="Polygon2D" parent="."]
-z_index = -1
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 1
