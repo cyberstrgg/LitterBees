@@ -10,9 +10,9 @@ const RecoveryRoom = preload("res://Scripts/UpgradeRooms/bees/recovery_room.gd")
 @onready var build_menu = $BuildMenu
 @onready var build_button = $BuildButton
 @onready var build_label = $BuildLabel
-@onready var build_damage_button = $BuildMenu/VBoxContainer/BuildDamageButton
-@onready var build_speed_button = $BuildMenu/VBoxContainer/BuildSpeedButton
-@onready var build_recovery_button = $BuildMenu/VBoxContainer/BuildRecoveryButton
+@onready var build_damage_button = $BuildMenu/CenterContainer/VBoxContainer/BuildDamageButton
+@onready var build_speed_button = $BuildMenu/CenterContainer/VBoxContainer/BuildSpeedButton
+@onready var build_recovery_button = $BuildMenu/CenterContainer/VBoxContainer/BuildRecoveryButton
 @onready var polygon_2d = $Polygon2D
 
 var damage_cost: int
@@ -47,10 +47,6 @@ func _ready():
     recovery_cost = RecoveryRoom.new().base_cost
     
     update_button_text()
-    
-    # Center the build menu inside the slot
-    build_menu.position = (size - build_menu.custom_minimum_size) / 2.0
-
 
 func update_button_text():
     build_damage_button.text = "Barracks (%d)" % damage_cost

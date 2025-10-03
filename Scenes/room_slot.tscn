@@ -20,24 +20,30 @@ script = ExtResource("1_kjnj3")
 
 [node name="BuildMenu" type="Panel" parent="."]
 visible = false
+layout_mode = 1
+anchors_preset = 15
 material = SubResource("ShaderMaterial_nfcui")
+
+[node name="CenterContainer" type="CenterContainer" parent="BuildMenu"]
+layout_mode = 1
+anchors_preset = 15
+
+[node name="VBoxContainer" type="VBoxContainer" parent="BuildMenu/CenterContainer"]
 layout_mode = 2
+theme_override_constants/separation = 10
 
-[node name="VBoxContainer" type="HBoxContainer" parent="BuildMenu"]
-custom_minimum_size = Vector2(500, 200)
-layout_mode = 0
-offset_right = 500.0
-offset_bottom = 200.0
-
-[node name="BuildDamageButton" type="Button" parent="BuildMenu/VBoxContainer"]
-layout_mode = 2
-icon_alignment = 1
-
-[node name="BuildSpeedButton" type="Button" parent="BuildMenu/VBoxContainer"]
+[node name="BuildDamageButton" type="Button" parent="BuildMenu/CenterContainer/VBoxContainer"]
+custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
 icon_alignment = 1
 
-[node name="BuildRecoveryButton" type="Button" parent="BuildMenu/VBoxContainer"]
+[node name="BuildSpeedButton" type="Button" parent="BuildMenu/CenterContainer/VBoxContainer"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+icon_alignment = 1
+
+[node name="BuildRecoveryButton" type="Button" parent="BuildMenu/CenterContainer/VBoxContainer"]
+custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
 icon_alignment = 1
 
