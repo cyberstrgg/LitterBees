@@ -1,23 +1,24 @@
-[gd_scene load_steps=6 format=3 uid="uid://cqow47bch5ocs"]
+[gd_scene load_steps=7 format=3 uid="uid://cqow47bch5ocs"]
 
-[ext_resource type="Script" uid="uid://bs2qeucwtife5" path="res://Scripts/main.gd" id="1_lquwl"]
+[ext_resource type="Script" path="res://Scripts/main.gd" id="1_lquwl"]
 [ext_resource type="PackedScene" uid="uid://b2em6gcsky3mb" path="res://Scenes/upgrades_menu.tscn" id="2_lquwl"]
+[ext_resource type="PackedScene" uid="uid://c6v2n7y0d2srf" path="res://Scenes/Shop/ShopMenu.tscn" id="3_abcde"]
 [ext_resource type="Texture2D" uid="uid://dfsj5emf3xp71" path="res://Assets/Visual/Bee_Nest_Honey_%28E%29_JE1.webp" id="3_1bvp3"]
 [ext_resource type="PackedScene" uid="uid://d2e82ja120s8" path="res://Scenes/bee.tscn" id="3_h2yge"]
 [ext_resource type="PackedScene" uid="uid://bcwamvfswossu" path="res://Scenes/trash.tscn" id="4_1bvp3"]
 
-[node name="Main" type="Node2D" node_paths=PackedStringArray("initial_trash_node", "hive_node", "camera_node", "score_label", "buy_bee_button")]
+[node name="Main" type="Node2D" node_paths=PackedStringArray("initial_trash_node", "hive_node", "camera_node", "score_label", "shop_button")]
 script = ExtResource("1_lquwl")
 upgrades_menu_scene = ExtResource("2_lquwl")
+shop_menu_scene = ExtResource("3_abcde")
 trash_scene = ExtResource("4_1bvp3")
 bee_scene = ExtResource("3_h2yge")
 initial_trash_node = NodePath("Trash")
 hive_node = NodePath("Hive")
 camera_node = NodePath("Camera2D")
 score_label = NodePath("Control/CanvasLayer/ScrapLabel")
-buy_bee_button = NodePath("Control/CanvasLayer/Button")
+shop_button = NodePath("Control/CanvasLayer/ShopButton")
 spawn_padding = 250.0
-base_bee_cost = 2
 
 [node name="Camera2D" type="Camera2D" parent="."]
 
@@ -38,7 +39,6 @@ trash_node = NodePath("../Trash")
 hive_node = NodePath("../Hive")
 
 [node name="Control" type="Control" parent="."]
-visible = false
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -48,36 +48,36 @@ grow_vertical = 2
 
 [node name="CanvasLayer" type="CanvasLayer" parent="Control"]
 
-[node name="Button" type="Button" parent="Control/CanvasLayer"]
-anchors_preset = 5
+[node name="ShopButton" type="Button" parent="Control/CanvasLayer"]
+anchors_preset = 7
 anchor_left = 0.5
+anchor_top = 1.0
 anchor_right = 0.5
-offset_left = -33.0
-offset_right = 33.0
-offset_bottom = 31.0
+anchor_bottom = 1.0
+offset_left = -38.0
+offset_top = -40.0
+offset_right = 38.0
 grow_horizontal = 2
-text = "buybee"
+grow_vertical = 0
+text = "Shop"
 
 [node name="ScrapLabel" type="Label" parent="Control/CanvasLayer"]
-offset_right = 40.0
-offset_bottom = 23.0
+offset_right = 80.0
+offset_bottom = 26.0
 text = "Scrap - "
 
 [node name="upgrades_button" type="Button" parent="Control/CanvasLayer"]
-anchors_preset = 3
+anchors_preset = 1
 anchor_left = 1.0
-anchor_top = 1.0
 anchor_right = 1.0
-anchor_bottom = 1.0
 offset_left = -82.0
-offset_top = -31.0
+offset_bottom = 31.0
 grow_horizontal = 0
-grow_vertical = 0
 text = "Upgrades"
 
 [node name="Trash2" parent="." instance=ExtResource("4_1bvp3")]
 position = Vector2(246, 6)
 health = 2
 
-[connection signal="pressed" from="Control/CanvasLayer/Button" to="." method="_on_button_pressed"]
+[connection signal="pressed" from="Control/CanvasLayer/ShopButton" to="." method="_on_shop_button_pressed"]
 [connection signal="pressed" from="Control/CanvasLayer/upgrades_button" to="." method="_on_upgrades_button_pressed"]

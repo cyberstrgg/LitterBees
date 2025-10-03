@@ -1,0 +1,47 @@
+[gd_scene load_steps=3 format=3 uid="uid://b82mkh8cw0yxt"]
+
+[ext_resource type="Script" uid="uid://cs5k6071soxya" path="res://Scripts/shop/beecard.gd" id="1_i6kfg"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_12345"]
+bg_color = Color(0.26, 0.26, 0.26, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[node name="BeeCard" type="PanelContainer"]
+custom_minimum_size = Vector2(180, 280)
+theme_override_styles/panel = SubResource("StyleBoxFlat_12345")
+script = ExtResource("1_i6kfg")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="NameLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Bee Name"
+horizontal_alignment = 1
+
+[node name="BeeTexture" type="TextureRect" parent="MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 120)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="OwnedLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Owned: 0"
+horizontal_alignment = 1
+
+[node name="BuyButton" type="Button" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Buy (15 Scrap)"
