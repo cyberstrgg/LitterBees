@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://dpsmtkk2fhxv5"]
+
+[ext_resource type="Script" uid="uid://b2hbmkopntch7" path="res://Scripts/honeycomb_layout.gd" id="1_6tch5"]
+[ext_resource type="PackedScene" uid="uid://dqxy3ue3j4jjv" path="res://Scenes/room_slot.tscn" id="2_6tch5"]
+
+[node name="HexagonGrid" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_6tch5")
+slot_scene = ExtResource("2_6tch5")

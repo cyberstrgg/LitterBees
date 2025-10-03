@@ -1,12 +1,17 @@
-[gd_scene load_steps=2 format=3 uid="uid://dqxy3ue3j4jjv"]
+[gd_scene load_steps=3 format=3 uid="uid://dqxy3ue3j4jjv"]
 
 [ext_resource type="Script" uid="uid://brtyv1h7lf0ch" path="res://Scripts/room_slot.gd" id="1_kjnj3"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kjnj3"]
 
 [node name="RoomSlot" type="PanelContainer"]
 custom_minimum_size = Vector2(500, 200)
 offset_right = 500.0
 offset_bottom = 200.0
+theme_override_styles/panel = SubResource("StyleBoxEmpty_kjnj3")
 script = ExtResource("1_kjnj3")
+
+[node name="Polygon2D" type="Polygon2D" parent="."]
 
 [node name="BuildMenu" type="Panel" parent="."]
 visible = false

@@ -5,7 +5,7 @@ signal menu_closed
 
 # Get references to the RoomView control and the grid
 @onready var room_view: Control = $CenterContainer/PanelContainer/VBoxContainer/RoomView
-@onready var grid: GridContainer = $CenterContainer/PanelContainer/VBoxContainer/RoomView/GridContainer
+@onready var hexagon_container: Control = $"CenterContainer/PanelContainer/VBoxContainer/RoomView/HexagonContainer"
 @onready var back_button: Button = $CenterContainer/PanelContainer/VBoxContainer/BackButton
 @onready var scrap_label: Label = $CenterContainer/PanelContainer/VBoxContainer/ScrapLabel
 
@@ -38,17 +38,17 @@ func update_scrap_label():
     if is_instance_valid(scrap_label):
         scrap_label.text = "Scrap: %d" % GlobalUpgrades.scrap_total
     # Update all buttons in the grid to reflect current scrap count
-    for room in grid.get_children():
+    for room in hexagon_container.get_children():
         if room.has_method("update_ui"):
             room.update_ui()
 
 func populate_grid():
     # Clear any existing children before rebuilding
-    for child in grid.get_children():
+    for child in hexagon_container.get_children():
         child.queue_free()
     
     # Rebuild the grid based on the saved layout in GlobalUpgrades
-    for room_type in GlobalUpgrades.grid_layout:
+    for room_type in GlobalUpgrades.hexagon_container_layout:
         var new_node
 
         match room_type:
@@ -69,7 +69,7 @@ func populate_grid():
                 new_node.room_demolished.connect(on_room_demolished)
         
         if is_instance_valid(new_node):
-            grid.add_child(new_node)
+            hexagon_container.add_child(new_node)
 
 
 func on_build_room_requested(room_type: String, cost: int, slot_instance: Node):
@@ -108,7 +108,7 @@ func on_room_demolished(refund_amount: int, room_instance: Node):
 
 func center_on_throne_room():
     # The throne room is the 5th child added to the grid (index 4)
-    var throne_room = grid.get_child(4)
+    var throne_room = hexagon_container.get_child(4)
     
     # Calculate the center of the throne room relative to the grid's origin
     var throne_room_center = throne_room.position + throne_room.size / 2.0
@@ -117,7 +117,7 @@ func center_on_throne_room():
     var room_view_center = room_view.size / 2.0
     
     # Set the grid's position to align the two centers
-    grid.position = room_view_center - throne_room_center
+    hexagon_container.position = room_view_center - throne_room_center
 
 func _on_back_button_pressed():
     queue_free()
