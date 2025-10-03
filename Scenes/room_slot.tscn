@@ -11,8 +11,8 @@ shader_parameter/aspect_ratio = 1.0
 
 [node name="RoomSlot" type="PanelContainer"]
 custom_minimum_size = Vector2(300, 300)
-offset_right = 512.0
-offset_bottom = 512.0
+offset_right = 300.0
+offset_bottom = 300.0
 theme_override_styles/panel = SubResource("StyleBoxEmpty_kjnj3")
 script = ExtResource("1_kjnj3")
 
@@ -41,6 +41,14 @@ icon_alignment = 1
 layout_mode = 2
 icon_alignment = 1
 
-[node name="BuildButton" type="Button" parent="."]
-layout_mode = 2
+[node name="BuildLabel" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 15
 text = "Build New Room"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BuildButton" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 15
+flat = true

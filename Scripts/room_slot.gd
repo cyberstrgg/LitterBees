@@ -9,6 +9,7 @@ const RecoveryRoom = preload("res://Scripts/UpgradeRooms/bees/recovery_room.gd")
 
 @onready var build_menu = $BuildMenu
 @onready var build_button = $BuildButton
+@onready var build_label = $BuildLabel
 @onready var build_damage_button = $BuildMenu/VBoxContainer/BuildDamageButton
 @onready var build_speed_button = $BuildMenu/VBoxContainer/BuildSpeedButton
 @onready var build_recovery_button = $BuildMenu/VBoxContainer/BuildRecoveryButton
@@ -59,6 +60,7 @@ func update_button_text():
 func _on_build_button_pressed():
     build_menu.visible = true
     build_button.visible = false
+    build_label.visible = false
 
 func _on_build_room_type_pressed(type: String):
     match type:
@@ -75,4 +77,5 @@ func _gui_input(event: InputEvent):
         if build_menu.visible:
             build_menu.visible = false
             build_button.visible = true
+            build_label.visible = true
             get_viewport().set_input_as_handled()
