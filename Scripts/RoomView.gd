@@ -9,21 +9,28 @@ func _process(_delta):
 	queue_redraw()
 
 func _draw():
-	# This function will now draw all outlines on top of the hexagons.
 	if not is_instance_valid(grid_container):
 		return
 
 	# Loop through all the hexagon nodes in the grid
 	for child in grid_container.get_children():
-		# Check if the child has a Polygon2D node
-		var poly_node = child.get_node_or_null("Polygon2D")
+		# Find the Polygon2D child by iterating and checking its type.
+		var poly_node = null
+		for subchild in child.get_children():
+			if subchild is Polygon2D:
+				poly_node = subchild
+				break # Found it, stop searching
+
 		if poly_node and not poly_node.polygon.is_empty():
-			# Temporarily move our "pen" to the child's position
-			draw_set_transform(child.position, child.rotation, child.scale)
-			# Draw the outline using the child's polygon data
+			# THE FIX: Manually build the transform from the Control node's properties.
+			var child_local_transform = Transform2D(child.rotation, child.position).scaled(child.scale)
+			var final_transform = grid_container.transform * child_local_transform
+			
+			draw_set_transform_matrix(final_transform)
 			draw_polyline(poly_node.polygon, Color.BLACK, 2.0)
-			# Reset the transform so the next outline draws in the correct place
-			draw_set_transform(Vector2.ZERO, 0, Vector2.ONE)
+
+	# Reset the transform at the end to not affect other UI elements.
+	draw_set_transform_matrix(Transform2D())
 
 func _gui_input(event: InputEvent):
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
