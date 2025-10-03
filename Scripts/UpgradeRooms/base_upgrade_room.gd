@@ -40,12 +40,6 @@ func _ready():
 	total_scrap_invested = base_cost
 	apply_upgrade_effect()
 	update_ui()
-	queue_redraw() # Tell the engine to run the _draw() function
-
-func _draw():
-	# Draw a 2px black outline using the same points as the polygon
-	if polygon_2d and not polygon_2d.polygon.is_empty():
-		draw_polyline(polygon_2d.polygon, Color.BLACK, 2.0)
 
 func update_ui():
 	level_label.text = "Level: %d" % level
@@ -68,7 +62,6 @@ func _on_upgrade_button_pressed():
 		total_scrap_invested += cost
 		level += 1
 		apply_upgrade_effect()
-		# update_ui is called automatically by the signal now
 
 func _on_demolish_button_pressed():
 	revert_all_effects()

@@ -1,3 +1,4 @@
+# upgrades_menu.gd
 extends CanvasLayer
 
 signal menu_closed
@@ -29,7 +30,7 @@ func _ready():
 	populate_grid()
 	
 	GlobalUpgrades.scrap_total_changed.connect(update_scrap_label)
-	update_scrap_label(GlobalUpgrades.scrap_total) # Initial update
+	update_scrap_label(GlobalUpgrades.scrap_total)
 	
 	await get_tree().process_frame
 	center_on_throne_room()

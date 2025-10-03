@@ -44,12 +44,6 @@ func _ready():
 	recovery_cost = RecoveryRoom.new().base_cost
 	
 	update_button_text()
-	queue_redraw() # Tell the engine to run the _draw() function
-
-func _draw():
-	# Draw a 2px black outline using the same points as the polygon
-	if polygon_2d and not polygon_2d.polygon.is_empty():
-		draw_polyline(polygon_2d.polygon, Color.BLACK, 2.0)
 
 func update_button_text():
 	build_damage_button.text = "Barracks (%d)" % damage_cost
@@ -77,10 +71,8 @@ func _gui_input(event: InputEvent):
 		if event.button_index == MOUSE_BUTTON_LEFT:
 			if not build_menu.visible:
 				_on_build_button_pressed()
-				get_viewport().set_input_as_handled()
 		
 		elif event.button_index == MOUSE_BUTTON_RIGHT:
 			if build_menu.visible:
 				build_menu.visible = false
 				build_label.visible = true
-				get_viewport().set_input_as_handled()
