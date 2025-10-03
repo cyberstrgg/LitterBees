@@ -19,8 +19,9 @@ var total_scrap_invested: int = 0
 @onready var name_label: Label = $MarginContainer/CenterContainer/VBoxContainer/NameLabel
 @onready var level_label: Label = $MarginContainer/CenterContainer/VBoxContainer/LevelLabel
 @onready var effect_label: Label = $MarginContainer/CenterContainer/VBoxContainer/EffectLabel
-@onready var upgrade_button: Button = $MarginContainer/CenterContainer/VBoxContainer/UpgradeButton
-@onready var demolish_button: Button = $MarginContainer/CenterContainer/VBoxContainer/DemolishButton
+# MODIFIED: Changed Button to HexButton
+@onready var upgrade_button: HexButton = $MarginContainer/CenterContainer/VBoxContainer/UpgradeButton
+@onready var demolish_button: HexButton = $MarginContainer/CenterContainer/VBoxContainer/DemolishButton
 @onready var polygon_2d: Polygon2D = $Polygon2D
 
 func _ready():
@@ -35,12 +36,13 @@ func _ready():
     polygon_2d.polygon = hexagon_points
     polygon_2d.color = Color(0.3, 0.3, 0.35) # Base color for upgrade rooms
 
-    # Connect button signals
+    # Connect button signals (this works because our custom button emits "pressed")
     upgrade_button.pressed.connect(_on_upgrade_button_pressed)
     demolish_button.pressed.connect(_on_demolish_button_pressed)
     
     # Initial setup
     name_label.text = room_name
+    demolish_button.text = "Demolish" # Set static text
     total_scrap_invested = base_cost
     apply_upgrade_effect()
     update_ui()
@@ -50,6 +52,7 @@ func update_ui():
     effect_label.text = get_effect_description()
     
     var next_cost = calculate_upgrade_cost()
+    # MODIFIED: Set properties on our custom HexButton
     upgrade_button.text = "Upgrade (%d Scrap)" % next_cost
     upgrade_button.disabled = GlobalUpgrades.scrap_total < next_cost
 

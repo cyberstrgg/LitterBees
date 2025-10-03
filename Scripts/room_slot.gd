@@ -8,7 +8,6 @@ const SpeedRoom = preload("res://Scripts/UpgradeRooms/bees/speed_room.gd")
 const RecoveryRoom = preload("res://Scripts/UpgradeRooms/bees/recovery_room.gd")
 
 @onready var build_menu = $BuildMenu
-@onready var build_button = $BuildButton
 @onready var build_label = $BuildLabel
 @onready var build_damage_button = $BuildMenu/CenterContainer/VBoxContainer/BuildDamageButton
 @onready var build_speed_button = $BuildMenu/CenterContainer/VBoxContainer/BuildSpeedButton
@@ -36,7 +35,6 @@ func _ready():
     polygon_2d.color = Color(0.2, 0.2, 0.2, 0.8)
 
     # Connect signals
-    build_button.pressed.connect(_on_build_button_pressed)
     build_damage_button.pressed.connect(_on_build_room_type_pressed.bind("damage"))
     build_speed_button.pressed.connect(_on_build_room_type_pressed.bind("speed"))
     build_recovery_button.pressed.connect(_on_build_room_type_pressed.bind("recovery"))
@@ -55,7 +53,6 @@ func update_button_text():
 
 func _on_build_button_pressed():
     build_menu.visible = true
-    build_button.visible = false
     build_label.visible = false
 
 func _on_build_room_type_pressed(type: String):
@@ -67,11 +64,20 @@ func _on_build_room_type_pressed(type: String):
         "recovery":
             emit_signal("build_room_requested", "recovery", recovery_cost, axial_coordinates)
 
-# Allows the player to right-click to close the build menu
+# Override to define a custom clickable shape
+func _has_point(point: Vector2) -> bool:
+    return Geometry2D.is_point_in_polygon(point, polygon_2d.polygon)
+
+# Allows the player to click to open/close the build menu
 func _gui_input(event: InputEvent):
-    if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_RIGHT and event.is_pressed():
-        if build_menu.visible:
-            build_menu.visible = false
-            build_button.visible = true
-            build_label.visible = true
-            get_viewport().set_input_as_handled()
+    if event is InputEventMouseButton and event.is_pressed():
+        if event.button_index == MOUSE_BUTTON_LEFT:
+            if not build_menu.visible:
+                _on_build_button_pressed()
+                get_viewport().set_input_as_handled()
+        
+        elif event.button_index == MOUSE_BUTTON_RIGHT:
+            if build_menu.visible:
+                build_menu.visible = false
+                build_label.visible = true
+                get_viewport().set_input_as_handled()
