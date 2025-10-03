@@ -12,7 +12,9 @@ const BeeCardScene = preload("res://Scenes/Shop/BeeCard.tscn")
 func _ready():
 	close_button.pressed.connect(queue_free)
 	populate_shop()
-	update_ui()
+	
+	GlobalUpgrades.scrap_total_changed.connect(update_ui)
+	update_ui(GlobalUpgrades.scrap_total) # Initial update
 
 func _unhandled_input(event: InputEvent):
 	if event.is_action_pressed("ui_cancel"):
@@ -41,9 +43,8 @@ func _on_buy_bee_requested(bee_type_id: String):
 			GlobalUpgrades.owned_bees[bee_type_id] = 1
 		
 		emit_signal("bee_purchased", bee_type_id)
-		update_ui()
 
-func update_ui():
+func update_ui(_new_total):
 	scrap_label.text = "Scrap: %d" % GlobalUpgrades.scrap_total
 	
 	for card in card_container.get_children():

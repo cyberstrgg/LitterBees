@@ -28,7 +28,10 @@ func _ready():
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	back_button.pressed.connect(_on_back_button_pressed)
 	populate_grid()
-	update_scrap_label()
+	
+	GlobalUpgrades.scrap_total_changed.connect(update_scrap_label)
+	update_scrap_label(GlobalUpgrades.scrap_total) # Initial update
+	
 	await get_tree().process_frame
 	center_on_throne_room()
 
@@ -43,7 +46,7 @@ func axial_to_pixel(q: int, r: int) -> Vector2:
 	var y = HEX_HEIGHT * 0.75 * float(r)
 	return Vector2(x, y)
 
-func update_scrap_label():
+func update_scrap_label(_new_total):
 	if is_instance_valid(scrap_label):
 		scrap_label.text = "Scrap: %d" % GlobalUpgrades.scrap_total
 	for child in grid.get_children():
@@ -132,14 +135,14 @@ func on_build_room_requested(room_type: String, cost: int, axial_coords: Vector2
 	GlobalUpgrades.grid_layout[axial_coords] = room_type
 	GlobalUpgrades.recalculate_all_stats()
 	populate_grid()
-	update_scrap_label()
+	# No need to call update_scrap_label here, the signal will do it
 
 func on_room_demolished(refund_amount: int, room_instance: Node, axial_coords: Vector2i):
 	GlobalUpgrades.scrap_total += refund_amount
 	GlobalUpgrades.grid_layout[axial_coords] = "empty"
 	GlobalUpgrades.recalculate_all_stats()
 	populate_grid()
-	update_scrap_label()
+	# No need to call update_scrap_label here, the signal will do it
 
 func on_buy_new_slot(coords: Vector2i):
 	var cost = GlobalUpgrades.NEW_SLOT_COST
@@ -148,7 +151,7 @@ func on_buy_new_slot(coords: Vector2i):
 	GlobalUpgrades.scrap_total -= cost
 	GlobalUpgrades.grid_layout[coords] = "empty"
 	populate_grid()
-	update_scrap_label()
+	# No need to call update_scrap_label here, the signal will do it
 
 func center_on_throne_room():
 	var throne_room_pos = axial_to_pixel(0, 0)

@@ -1,6 +1,8 @@
 # Scripts/GlobalUpgrades.gd
 extends Node
 
+signal scrap_total_changed(new_total)
+
 # --- Bee Data ---
 # Dictionary to store how many of each bee type is owned.
 var owned_bees: Dictionary = {
@@ -21,7 +23,11 @@ var bee_data: Dictionary = {
 
 
 # --- Scrap Variable ---
-var scrap_total: int = 100
+var scrap_total: int = 100:
+	set(value):
+		scrap_total = value
+		emit_signal("scrap_total_changed", scrap_total)
+
 const NEW_SLOT_COST: int = 75 # Cost to unlock a new empty slot
 
 # --- Room Grid State ---

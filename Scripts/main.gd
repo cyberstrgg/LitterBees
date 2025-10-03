@@ -18,6 +18,9 @@ func _ready():
 	if is_instance_valid(initial_trash_node):
 		initial_trash_node.trash_destroyed.connect(on_trash_destroyed)
 	
+	# Connect the main UI label to the new signal
+	GlobalUpgrades.scrap_total_changed.connect(update_score_label)
+	# Update label once at the start
 	update_score_label()
 
 	await get_tree().process_frame
@@ -32,12 +35,15 @@ func connect_bee_signals(bee_node):
 		bee_node.scrap_delivered.connect(on_scrap_delivered)
 
 func on_scrap_delivered():
+	# This is simpler now. Just change the value, and the signal will handle updates.
 	GlobalUpgrades.scrap_total += 1
-	update_score_label()
 
-func update_score_label():
+func update_score_label(new_total: int = -1):
+	# If called by the signal, new_total will be provided.
+	# Otherwise, we read the value directly from GlobalUpgrades.
+	var current_scrap = new_total if new_total != -1 else GlobalUpgrades.scrap_total
 	if is_instance_valid(score_label):
-		score_label.text = "Scrap: %d" % GlobalUpgrades.scrap_total
+		score_label.text = "Scrap: %d" % current_scrap
 
 func spawn_bee(bee_type: String = "standard_bee"):
 	if not bee_scene: return
