@@ -1,12 +1,7 @@
-[gd_scene load_steps=5 format=3 uid="uid://ikdj38sp720t"]
+[gd_scene load_steps=3 format=3 uid="uid://ikdj38sp720t"]
 
 [ext_resource type="Script" path="res://Scripts/UpgradeRooms/base_upgrade_room.gd" id="1_w4h07"]
-[ext_resource type="Shader" path="res://Scripts/hexagon_mask.gdshader" id="2_cgd4t"]
 [ext_resource type="PackedScene" uid="uid://c1w7b6k4w8yqg" path="res://HexButton.tscn" id="3_s0t4n"]
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_q32t4"]
-shader = ExtResource("2_cgd4t")
-shader_parameter/aspect_ratio = 1.0
 
 [node name="UpgradeRoom" type="Control"]
 custom_minimum_size = Vector2(300, 300)
@@ -16,17 +11,16 @@ offset_right = 300.0
 offset_bottom = 300.0
 script = ExtResource("1_w4h07")
 
-[node name="InputBlocker" type="Panel" parent="."]
-material = SubResource("ShaderMaterial_q32t4")
-layout_mode = 1
-anchors_preset = 15
-
 [node name="Polygon2D" type="Polygon2D" parent="."]
 z_index = -1
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="CenterContainer" type="CenterContainer" parent="MarginContainer"]
 layout_mode = 2

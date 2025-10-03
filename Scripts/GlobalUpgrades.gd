@@ -2,7 +2,7 @@
 extends Node
 
 # --- Scrap Variable ---
-var scrap_total: int = 50
+var scrap_total: int = 100
 const NEW_SLOT_COST: int = 75 # Cost to unlock a new empty slot
 
 # --- Room Grid State ---

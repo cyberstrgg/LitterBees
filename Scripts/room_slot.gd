@@ -13,6 +13,7 @@ const RecoveryRoom = preload("res://Scripts/UpgradeRooms/bees/recovery_room.gd")
 @onready var build_speed_button = $BuildMenu/CenterContainer/VBoxContainer/BuildSpeedButton
 @onready var build_recovery_button = $BuildMenu/CenterContainer/VBoxContainer/BuildRecoveryButton
 @onready var polygon_2d = $Polygon2D
+@onready var background_hex: Polygon2D = $BuildMenu/BackgroundHex
 
 var damage_cost: int
 var speed_cost: int
@@ -21,7 +22,7 @@ var recovery_cost: int
 var axial_coordinates: Vector2i # To store its position in the hex grid
 
 func _ready():
-    # Draw the hexagon background
+    # Calculate the points for the hexagon shape
     var size = self.custom_minimum_size
     var center = size / 2.0
     var hexagon_points = PackedVector2Array()
@@ -31,8 +32,14 @@ func _ready():
         var angle_rad = deg_to_rad(angle_deg)
         hexagon_points.append(center + Vector2(center.x * cos(angle_rad), center.y * sin(angle_rad)))
     
+    # Configure the main dark hexagon for the empty slot
     polygon_2d.polygon = hexagon_points
     polygon_2d.color = Color(0.2, 0.2, 0.2, 0.8)
+
+    # Configure the new white hexagon for the build menu's background
+    background_hex.polygon = hexagon_points
+    # The color is already set to white in the scene file, but you could also set it here:
+    # background_hex.color = Color.WHITE
 
     # Connect signals
     build_damage_button.pressed.connect(_on_build_room_type_pressed.bind("damage"))
