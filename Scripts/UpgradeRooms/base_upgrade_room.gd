@@ -1,5 +1,5 @@
 # base_upgrade_room.gd
-extends PanelContainer
+extends Control
 
 signal room_demolished(refund_amount, room_instance)
 

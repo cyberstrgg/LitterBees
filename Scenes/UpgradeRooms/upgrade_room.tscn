@@ -1,15 +1,27 @@
-[gd_scene load_steps=3 format=3 uid="uid://ikdj38sp720t"]
+[gd_scene load_steps=4 format=3 uid="uid://ikdj38sp720t"]
 
-[ext_resource type="Script" uid="uid://cy672nwjno72q" path="res://Scripts/UpgradeRooms/base_upgrade_room.gd" id="1_w4h07"]
+[ext_resource type="Script" path="res://Scripts/UpgradeRooms/base_upgrade_room.gd" id="1_w4h07"]
+[ext_resource type="Shader" path="res://Scripts/hexagon_mask.gdshader" id="2_cgd4t"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_lq8f5"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_q32t4"]
+shader = ExtResource("2_cgd4t")
+shader_parameter/aspect_ratio = 1.0
 
-[node name="UpgradeRoom" type="PanelContainer"]
+[node name="UpgradeRoom" type="Control"]
 custom_minimum_size = Vector2(300, 300)
-theme_override_styles/panel = SubResource("StyleBoxEmpty_lq8f5")
+layout_mode = 3
+anchors_preset = 0
+offset_right = 300.0
+offset_bottom = 300.0
 script = ExtResource("1_w4h07")
 
+[node name="InputBlocker" type="Panel" parent="."]
+material = SubResource("ShaderMaterial_q32t4")
+layout_mode = 1
+anchors_preset = 15
+
 [node name="Polygon2D" type="Polygon2D" parent="."]
+z_index = -1
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 1
