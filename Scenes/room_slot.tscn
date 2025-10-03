@@ -1,8 +1,13 @@
-[gd_scene load_steps=3 format=3 uid="uid://dqxy3ue3j4jjv"]
+[gd_scene load_steps=5 format=3 uid="uid://dqxy3ue3j4jjv"]
 
 [ext_resource type="Script" uid="uid://brtyv1h7lf0ch" path="res://Scripts/room_slot.gd" id="1_kjnj3"]
+[ext_resource type="Shader" uid="uid://csd1ec7vadsy6" path="res://Scripts/hexagon_mask.gdshader" id="2_vinua"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kjnj3"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_nfcui"]
+shader = ExtResource("2_vinua")
+shader_parameter/aspect_ratio = 1.0
 
 [node name="RoomSlot" type="PanelContainer"]
 custom_minimum_size = Vector2(300, 300)
@@ -15,6 +20,7 @@ script = ExtResource("1_kjnj3")
 
 [node name="BuildMenu" type="Panel" parent="."]
 visible = false
+material = SubResource("ShaderMaterial_nfcui")
 layout_mode = 2
 
 [node name="VBoxContainer" type="HBoxContainer" parent="BuildMenu"]
