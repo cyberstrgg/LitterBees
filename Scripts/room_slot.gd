@@ -1,4 +1,3 @@
-# room_slot.gd
 extends PanelContainer
 
 signal build_room_requested(room_type, cost, slot_instance)
@@ -13,12 +12,28 @@ const RecoveryRoom = preload("res://Scripts/UpgradeRooms/bees/recovery_room.gd")
 @onready var build_damage_button = $BuildMenu/VBoxContainer/BuildDamageButton
 @onready var build_speed_button = $BuildMenu/VBoxContainer/BuildSpeedButton
 @onready var build_recovery_button = $BuildMenu/VBoxContainer/BuildRecoveryButton
+@onready var polygon_2d = $Polygon2D
 
 var damage_cost: int
 var speed_cost: int
 var recovery_cost: int
 
 func _ready():
+    # ADD THE CODE BELOW TO DRAW THE HEXAGON
+    var size = self.custom_minimum_size
+    var center = size / 2.0
+    var hexagon_points = PackedVector2Array([
+        Vector2(center.x, 0),
+        Vector2(size.x, size.y * 0.25),
+        Vector2(size.x, size.y * 0.75),
+        Vector2(center.x, size.y),
+        Vector2(0, size.y * 0.75),
+        Vector2(0, size.y * 0.25)
+    ])
+    polygon_2d.polygon = hexagon_points
+    polygon_2d.color = Color(0.2, 0.2, 0.2, 0.8) # Optional: set a color for the hexagon
+
+    # --- EXISTING CODE ---
     # Connect signals
     build_button.pressed.connect(_on_build_button_pressed)
     build_damage_button.pressed.connect(_on_build_room_type_pressed.bind("damage"))
@@ -49,8 +64,6 @@ func _on_build_room_type_pressed(type: String):
             emit_signal("build_room_requested", "speed", speed_cost, self)
         "recovery":
             emit_signal("build_room_requested", "recovery", recovery_cost, self)
-    
-    # No need to change visibility here, as this node will be replaced
 
 # Allows the player to right-click to close the build menu
 func _gui_input(event: InputEvent):
