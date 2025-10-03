@@ -5,9 +5,9 @@
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kjnj3"]
 
 [node name="RoomSlot" type="PanelContainer"]
-custom_minimum_size = Vector2(500, 200)
-offset_right = 500.0
-offset_bottom = 200.0
+custom_minimum_size = Vector2(300, 300)
+offset_right = 512.0
+offset_bottom = 512.0
 theme_override_styles/panel = SubResource("StyleBoxEmpty_kjnj3")
 script = ExtResource("1_kjnj3")
 
