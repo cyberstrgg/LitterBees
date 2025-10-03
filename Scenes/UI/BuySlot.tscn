@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://cxsgymaxg3c3a"]
+
+[ext_resource type="Script" path="res://Scripts/UI/BuySlot.gd" id="1_4754s"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xqoqo"]
+
+[node name="BuySlot" type="PanelContainer"]
+custom_minimum_size = Vector2(300, 300)
+theme_override_styles/panel = SubResource("StyleBoxEmpty_xqoqo")
+script = ExtResource("1_4754s")
+
+[node name="Polygon2D" type="Polygon2D" parent="."]
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 2

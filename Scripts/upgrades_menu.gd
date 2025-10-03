@@ -11,9 +11,12 @@ signal menu_closed
 const ROOM_SLOT_SCENE = preload("res://Scenes/room_slot.tscn")
 const THRONE_ROOM_SCENE = preload("res://Scenes/throne_room.tscn")
 const UPGRADE_ROOM_SCENE = preload("res://Scenes/UpgradeRooms/upgrade_room.tscn")
+const BUY_SLOT_SCENE = preload("res://Scenes/UI/BuySlot.tscn")
+
 const DamageRoom = preload("res://Scripts/UpgradeRooms/bees/damage_room.gd")
 const SpeedRoom = preload("res://Scripts/UpgradeRooms/bees/speed_room.gd")
 const RecoveryRoom = preload("res://Scripts/UpgradeRooms/bees/recovery_room.gd")
+
 const HEX_RADIUS = 150.0
 const HEX_WIDTH = HEX_RADIUS * 1.73205
 const HEX_HEIGHT = HEX_RADIUS * 2.0
@@ -26,8 +29,10 @@ func _ready():
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	back_button.pressed.connect(_on_back_button_pressed)
 	populate_grid()
+	
 	GlobalUpgrades.scrap_total_changed.connect(update_scrap_label)
 	update_scrap_label(GlobalUpgrades.scrap_total)
+	
 	await get_tree().process_frame
 	center_on_throne_room()
 
@@ -45,19 +50,20 @@ func axial_to_pixel(q: int, r: int) -> Vector2:
 func update_scrap_label(_new_total):
 	if is_instance_valid(scrap_label):
 		scrap_label.text = "Scrap: %d" % GlobalUpgrades.scrap_total
+	
 	for child in grid.get_children():
-		if child.get_child_count() > 0:
-			var button = child.get_node_or_null("ClickableArea")
-			if button is Button:
-				button.disabled = GlobalUpgrades.scrap_total < GlobalUpgrades.NEW_SLOT_COST
 		if child.has_method("update_ui"):
 			child.update_ui()
+		if child.has_method("update_state"):
+			child.update_state(GlobalUpgrades.scrap_total)
 
 func populate_grid():
 	for child in grid.get_children():
 		child.queue_free()
+
 	var existing_slots = GlobalUpgrades.grid_layout.keys()
 	var potential_new_slots = []
+
 	for axial_coords in existing_slots:
 		var room_type = GlobalUpgrades.grid_layout[axial_coords]
 		var new_node
@@ -74,44 +80,28 @@ func populate_grid():
 				elif room_type == "speed": new_node.set_script(SpeedRoom)
 				elif room_type == "recovery": new_node.set_script(RecoveryRoom)
 				new_node.room_demolished.connect(on_room_demolished.bind(axial_coords))
+		
 		if is_instance_valid(new_node):
 			var pos = axial_to_pixel(axial_coords.x, axial_coords.y)
 			new_node.position = pos - new_node.custom_minimum_size / 2.0
 			grid.add_child(new_node)
+			
 		for direction in AXIAL_DIRECTIONS:
 			var neighbor_coords = axial_coords + direction
 			if not existing_slots.has(neighbor_coords) and not potential_new_slots.has(neighbor_coords):
 				potential_new_slots.append(neighbor_coords)
+
 	for coords in potential_new_slots:
-		var panel = PanelContainer.new()
-		panel.custom_minimum_size = Vector2(300, 300)
-		panel.add_theme_stylebox_override("panel", StyleBoxEmpty.new())
-		var poly = Polygon2D.new()
-		var center = panel.custom_minimum_size / 2.0
-		var hex_points = PackedVector2Array()
-		for i in range(6):
-			var angle_rad = deg_to_rad(60 * i + 30)
-			hex_points.append(center + Vector2(HEX_RADIUS * cos(angle_rad), HEX_RADIUS * sin(angle_rad)))
-		poly.polygon = hex_points
-		poly.color = Color(0.1, 0.1, 0.1, 0.7)
-		panel.add_child(poly)
-		var button_label = Label.new()
-		button_label.text = "Buy Slot\n(%d Scrap)" % GlobalUpgrades.NEW_SLOT_COST
-		button_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		button_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		button_label.autowrap_mode = TextServer.AUTOWRAP_WORD
-		button_label.size = panel.custom_minimum_size
-		panel.add_child(button_label)
-		var clickable_area = Button.new()
-		clickable_area.name = "ClickableArea"
-		clickable_area.flat = true
-		clickable_area.custom_minimum_size = panel.custom_minimum_size
-		panel.add_child(clickable_area)
+		var new_slot_panel = BUY_SLOT_SCENE.instantiate()
+		
 		var pos = axial_to_pixel(coords.x, coords.y)
-		panel.position = pos - panel.custom_minimum_size / 2.0
-		clickable_area.disabled = GlobalUpgrades.scrap_total < GlobalUpgrades.NEW_SLOT_COST
-		clickable_area.pressed.connect(on_buy_new_slot.bind(coords))
-		grid.add_child(panel)
+		new_slot_panel.position = pos - new_slot_panel.custom_minimum_size / 2.0
+		
+		new_slot_panel.pressed.connect(on_buy_new_slot.bind(coords))
+		
+		new_slot_panel.update_state(GlobalUpgrades.scrap_total)
+		
+		grid.add_child(new_slot_panel)
 
 func on_build_room_requested(room_type: String, cost: int, axial_coords: Vector2i):
 	if GlobalUpgrades.scrap_total < cost:
