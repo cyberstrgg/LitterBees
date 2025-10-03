@@ -1,8 +1,8 @@
+# Scripts/room_slot.gd
 extends PanelContainer
 
 signal build_room_requested(room_type, cost, axial_coordinates)
 
-# Preload the scripts to get their base costs
 const DamageRoom = preload("res://Scripts/UpgradeRooms/bees/damage_room.gd")
 const SpeedRoom = preload("res://Scripts/UpgradeRooms/bees/speed_room.gd")
 const RecoveryRoom = preload("res://Scripts/UpgradeRooms/bees/recovery_room.gd")
@@ -19,72 +19,68 @@ var damage_cost: int
 var speed_cost: int
 var recovery_cost: int
 
-var axial_coordinates: Vector2i # To store its position in the hex grid
+var axial_coordinates: Vector2i
 
 func _ready():
-    # Calculate the points for the hexagon shape
-    var size = self.custom_minimum_size
-    var center = size / 2.0
-    var hexagon_points = PackedVector2Array()
-    # Pointy-top hexagon points
-    for i in range(6):
-        var angle_deg = 60 * i + 30 # Add 30 degrees to make it pointy-top
-        var angle_rad = deg_to_rad(angle_deg)
-        hexagon_points.append(center + Vector2(center.x * cos(angle_rad), center.y * sin(angle_rad)))
-    
-    # Configure the main dark hexagon for the empty slot
-    polygon_2d.polygon = hexagon_points
-    polygon_2d.color = Color(0.2, 0.2, 0.2, 0.8)
+	var size = self.custom_minimum_size
+	var center = size / 2.0
+	var hexagon_points = PackedVector2Array()
+	for i in range(6):
+		var angle_deg = 60 * i + 30
+		var angle_rad = deg_to_rad(angle_deg)
+		hexagon_points.append(center + Vector2(center.x * cos(angle_rad), center.y * sin(angle_rad)))
+	
+	polygon_2d.polygon = hexagon_points
+	polygon_2d.color = Color(0.2, 0.2, 0.2, 0.8)
 
-    # Configure the new white hexagon for the build menu's background
-    background_hex.polygon = hexagon_points
-    # The color is already set to white in the scene file, but you could also set it here:
-    # background_hex.color = Color.WHITE
+	background_hex.polygon = hexagon_points
 
-    # Connect signals
-    build_damage_button.pressed.connect(_on_build_room_type_pressed.bind("damage"))
-    build_speed_button.pressed.connect(_on_build_room_type_pressed.bind("speed"))
-    build_recovery_button.pressed.connect(_on_build_room_type_pressed.bind("recovery"))
-    
-    # Get base costs from the scripts
-    damage_cost = DamageRoom.new().base_cost
-    speed_cost = SpeedRoom.new().base_cost
-    recovery_cost = RecoveryRoom.new().base_cost
-    
-    update_button_text()
+	build_damage_button.pressed.connect(_on_build_room_type_pressed.bind("damage"))
+	build_speed_button.pressed.connect(_on_build_room_type_pressed.bind("speed"))
+	build_recovery_button.pressed.connect(_on_build_room_type_pressed.bind("recovery"))
+	
+	damage_cost = DamageRoom.new().base_cost
+	speed_cost = SpeedRoom.new().base_cost
+	recovery_cost = RecoveryRoom.new().base_cost
+	
+	update_button_text()
+	queue_redraw() # Tell the engine to run the _draw() function
+
+func _draw():
+	# Draw a 2px black outline using the same points as the polygon
+	if polygon_2d and not polygon_2d.polygon.is_empty():
+		draw_polyline(polygon_2d.polygon, Color.BLACK, 2.0)
 
 func update_button_text():
-    build_damage_button.text = "Barracks (%d)" % damage_cost
-    build_speed_button.text = "Apiary (%d)" % speed_cost
-    build_recovery_button.text = "Nursery (%d)" % recovery_cost
+	build_damage_button.text = "Barracks (%d)" % damage_cost
+	build_speed_button.text = "Apiary (%d)" % speed_cost
+	build_recovery_button.text = "Nursery (%d)" % recovery_cost
 
 func _on_build_button_pressed():
-    build_menu.visible = true
-    build_label.visible = false
+	build_menu.visible = true
+	build_label.visible = false
 
 func _on_build_room_type_pressed(type: String):
-    match type:
-        "damage":
-            emit_signal("build_room_requested", "damage", damage_cost, axial_coordinates)
-        "speed":
-            emit_signal("build_room_requested", "speed", speed_cost, axial_coordinates)
-        "recovery":
-            emit_signal("build_room_requested", "recovery", recovery_cost, axial_coordinates)
+	match type:
+		"damage":
+			emit_signal("build_room_requested", "damage", damage_cost, axial_coordinates)
+		"speed":
+			emit_signal("build_room_requested", "speed", speed_cost, axial_coordinates)
+		"recovery":
+			emit_signal("build_room_requested", "recovery", recovery_cost, axial_coordinates)
 
-# Override to define a custom clickable shape
 func _has_point(point: Vector2) -> bool:
-    return Geometry2D.is_point_in_polygon(point, polygon_2d.polygon)
+	return Geometry2D.is_point_in_polygon(point, polygon_2d.polygon)
 
-# Allows the player to click to open/close the build menu
 func _gui_input(event: InputEvent):
-    if event is InputEventMouseButton and event.is_pressed():
-        if event.button_index == MOUSE_BUTTON_LEFT:
-            if not build_menu.visible:
-                _on_build_button_pressed()
-                get_viewport().set_input_as_handled()
-        
-        elif event.button_index == MOUSE_BUTTON_RIGHT:
-            if build_menu.visible:
-                build_menu.visible = false
-                build_label.visible = true
-                get_viewport().set_input_as_handled()
+	if event is InputEventMouseButton and event.is_pressed():
+		if event.button_index == MOUSE_BUTTON_LEFT:
+			if not build_menu.visible:
+				_on_build_button_pressed()
+				get_viewport().set_input_as_handled()
+		
+		elif event.button_index == MOUSE_BUTTON_RIGHT:
+			if build_menu.visible:
+				build_menu.visible = false
+				build_label.visible = true
+				get_viewport().set_input_as_handled()

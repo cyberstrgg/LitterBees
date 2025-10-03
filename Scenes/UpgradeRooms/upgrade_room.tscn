@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://ikdj38sp720t"]
 
-[ext_resource type="Script" path="res://Scripts/UpgradeRooms/base_upgrade_room.gd" id="1_w4h07"]
-[ext_resource type="PackedScene" uid="uid://c1w7b6k4w8yqg" path="res://HexButton.tscn" id="3_s0t4n"]
+[ext_resource type="Script" uid="uid://cy672nwjno72q" path="res://Scripts/UpgradeRooms/base_upgrade_room.gd" id="1_w4h07"]
+[ext_resource type="PackedScene" uid="uid://bsgtw3utn2dwk" path="res://HexButton.tscn" id="3_s0t4n"]
 
 [node name="UpgradeRoom" type="Control"]
 custom_minimum_size = Vector2(300, 300)
@@ -9,6 +9,7 @@ layout_mode = 3
 anchors_preset = 0
 offset_right = 300.0
 offset_bottom = 300.0
+mouse_filter = 1
 script = ExtResource("1_w4h07")
 
 [node name="Polygon2D" type="Polygon2D" parent="."]
@@ -44,8 +45,8 @@ horizontal_alignment = 1
 [node name="EffectLabel" type="Label" parent="MarginContainer/CenterContainer/VBoxContainer"]
 layout_mode = 2
 text = "Effect: TBD"
-autowrap_mode = 3
 horizontal_alignment = 1
+autowrap_mode = 3
 
 [node name="UpgradeButton" parent="MarginContainer/CenterContainer/VBoxContainer" instance=ExtResource("3_s0t4n")]
 custom_minimum_size = Vector2(0, 50)
